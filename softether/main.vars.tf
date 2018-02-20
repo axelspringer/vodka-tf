@@ -1,8 +1,3 @@
-#--------------------------------------------------------------
-# This module creates all resources necessary for OpenVPN
-# on AWS with an ELB on Ports 443, 943
-#--------------------------------------------------------------
-
 variable "aws_instance_type"      { default = "m3.medium" }
 variable "aws_region"             { default = "eu-west-1" }
 variable "aws_ami_id"             { 
