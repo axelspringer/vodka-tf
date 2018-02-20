@@ -110,6 +110,12 @@ resource "aws_iam_policy" "default" {
   policy      = "${data.aws_iam_policy_document.token.json}"
 }
 
+resource "aws_iam_group_policy" "default" {
+  count   = "${length(var.groups)}"
+  group   = "${element(var.groups, count.index)}"
+  policy  = "${data.aws_iam_policy_document.token.json}" 
+}
+
 resource "aws_iam_role" "default" {
   count              = "${signum(length(var.roles)) == 1 ? 0 : 1}"
   name               = "${var.name}"

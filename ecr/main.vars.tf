@@ -7,14 +7,10 @@ variable "roles" {
   default     = []
 }
 
-variable "delimiter" {
-  type    = "string"
-  default = "-"
-}
-
-variable "attributes" {
-  type    = "list"
-  default = []
+variable "groups" {
+  type        = "list"
+  description = "Groups to provide with access to the ECR"
+  default     = []
 }
 
 variable "tags" {
