@@ -50,6 +50,7 @@ resource "aws_route" "public_internet_gateway" {
 
 # + get res vpc vpn route
 resource "aws_route" "vpn_internet_gateway" {
+  count                  = "${var.create_vpn}"
   route_table_id         = "${aws_route_table.vpn.id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = "${aws_internet_gateway.mod.id}"
@@ -73,9 +74,10 @@ resource "aws_route_table" "private" {
 
 # + get res vpc vpn route
 resource "aws_route_table" "vpn" {
-  vpc_id            = "${aws_vpc.mod.id}"
-  propagating_vgws = ["${var.vpn_propagating_vgws}"]
-  tags              = "${merge(var._tags, var.tags, map("Name", format("%s-vpn", var.name)))}"
+  count               = "${var.create_vpn}"
+  vpc_id              = "${aws_vpc.mod.id}"
+  propagating_vgws    = ["${var.vpn_propagating_vgws}"]
+  tags                = "${merge(var._tags, var.tags, map("Name", format("%s-vpn", var.name)))}"
 }
 
 # + get res vpc subnet private
@@ -98,6 +100,7 @@ resource "aws_subnet" "database" {
 
 # + get res vpc subnet vpn
 resource "aws_subnet" "vpn" {
+  count               = "${var.create_vpn}"
   vpc_id              = "${aws_vpc.mod.id}"
   cidr_block          = "${var.vpn_subnet}"
   tags                = "${merge(var._tags, var.tags, var.vpn_subnet_tags, map("Name", format("%s-vpn-%s", var.name, element(var.azs, 0))))}"
@@ -202,6 +205,7 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_route_table_association" "vpn" {
+  count          = "${var.create_vpn}"
   subnet_id      = "${aws_subnet.vpn.id}"
   route_table_id = "${aws_route_table.vpn.id}"
 }

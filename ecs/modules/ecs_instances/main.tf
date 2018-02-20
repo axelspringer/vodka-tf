@@ -78,14 +78,6 @@ resource "aws_autoscaling_group" "asg" {
     value               = "${var.instance_group}"
     propagate_at_launch = "true"
   }
-
-  # EC2 instances require internet connectivity to boot. Thus EC2 instances must not start before NAT is available.
-  # For info why see description in the network module.
-  tag {
-    key                 = "DependsId"
-    value               = "${var.depends_id}"
-    propagate_at_launch = "false"
-  }
 }
 
 data "template_file" "user_data" {

@@ -116,12 +116,17 @@ variable "database_subnet_tags" {
 
 variable "vpn_subnet_tags" {
   description = "Additional tags for the VPN subnet"
-  default     = {}
+  default     = { }
 }
 
 variable "elasticache_subnet_tags" {
   description = "Additional tags for the elasticache subnets"
-  default     = {}
+  default     = { }
+}
+
+variable "create_vpn" {
+  description = "Create VPN and related resources"
+  default     = true
 }
 
 # !private

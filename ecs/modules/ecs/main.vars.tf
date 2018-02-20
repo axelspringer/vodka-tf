@@ -12,7 +12,7 @@ variable "instance_group" {
   description = "The name of the instances that you consider as a group"
 }
 
-variable "vpc_cidr" {
+variable "vpc_id" {
   description = "VPC cidr block. Example: 10.0.0.0/16"
 }
 

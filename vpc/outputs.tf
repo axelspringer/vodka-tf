@@ -6,8 +6,8 @@ output "database_subnets" {
   value = ["${aws_subnet.database.*.id}"]
 }
 
-output "vpn_subnet" {
-  value = "${aws_subnet.vpn.id}"
+output "vpn_subnet_ids" {
+  value = "${aws_subnet.vpn.*.id}"
 }
 
 output "database_subnet_group" {
@@ -38,8 +38,8 @@ output "private_route_table_ids" {
   value = ["${aws_route_table.private.*.id}"]
 }
 
-output "vpn_route_table_id" {
-  value = "${aws_route_table.vpn.id}"
+output "vpn_route_table_ids" {
+  value = "${aws_route_table.vpn.*.id}"
 }
 
 output "default_security_group_id" {

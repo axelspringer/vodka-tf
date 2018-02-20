@@ -5,6 +5,7 @@ variable "instance_type"    { }
 variable "max_size"         { }
 variable "min_size"         { }
 variable "vpc_cidr"         { }
+variable "vpc_id"           { }
 variable "key_name"         { }
 
 variable "private_subnet_cidrs" {
