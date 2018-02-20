@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "resource" {
 }
 
 resource "aws_ecr_repository" "default" {
-  name = "${var.name}"
+  name = "${var.name}-${terraform.workspace}"
 }
 
 resource "aws_ecr_repository_policy" "default" {
@@ -105,7 +105,7 @@ resource "aws_ecr_repository_policy" "default_ecr" {
 }
 
 resource "aws_iam_policy" "default" {
-  name        = "${var.name}"
+  name        = "${var.name}-${terraform.workspace}-ecr"
   description = "Allow IAM Users to call ecr:GetAuthorizationToken"
   policy      = "${data.aws_iam_policy_document.token.json}"
 }
@@ -118,7 +118,7 @@ resource "aws_iam_group_policy" "default" {
 
 resource "aws_iam_role" "default" {
   count              = "${signum(length(var.roles)) == 1 ? 0 : 1}"
-  name               = "${var.name}"
+  name               = "${var.name}-${terraform.workspace}-ecr"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role.json}"
 }
 
@@ -136,7 +136,7 @@ resource "aws_iam_role_policy_attachment" "default" {
 
 resource "aws_iam_instance_profile" "default" {
   count = "${signum(length(var.roles)) == 1 ? 0 : 1}"
-  name  = "${var.name}"
+  name  = "${var.name}-${terraform.workspace}-ecr"
   role  = "${aws_iam_role.default.name}"
 }
 
