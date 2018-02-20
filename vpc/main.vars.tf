@@ -74,6 +74,11 @@ variable "enable_s3_endpoint" {
   default     = false
 }
 
+variable "enable_ipv6" {
+  description = "should be true, to enable IPv6 support"
+  default     = true
+}
+
 variable "map_public_ip_on_launch" {
   description = "should be false if you do not want to auto-assign public IP on launch"
   default     = true

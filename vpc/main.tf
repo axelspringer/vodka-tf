@@ -26,6 +26,8 @@ resource "aws_vpc" "mod" {
   enable_dns_hostnames = "${var.enable_dns_hostnames}"
   enable_dns_support   = "${var.enable_dns_support}"
   tags                 = "${merge(var._tags, var.tags, map("Name", format("%s", var.name)))}"
+
+  assign_generated_ipv6_cidr_block = "${var.enable_ipv6}"
 }
 
 # + get res vpc internet gateway
