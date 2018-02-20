@@ -1,18 +1,17 @@
-variable "desired_capacity" { }
-variable "ecs_aws_ami"      { }
-variable "environment"      { }
-variable "instance_type"    { }
-variable "max_size"         { }
-variable "min_size"         { }
-variable "vpc_cidr"         { }
-variable "vpc_id"           { }
-variable "key_name"         { }
+variable "desired_capacity" {}
+variable "ecs_aws_ami" {}
+variable "environment" {}
+variable "instance_type" {}
+variable "max_size" {}
+variable "min_size" {}
+variable "vpc_id" {}
+variable "key_name" {}
 
-variable "private_subnet_cidrs" {
+variable "private_subnet_ids" {
   type = "list"
 }
 
-variable "public_subnet_cidrs" {
+variable "public_subnet_ids" {
   type = "list"
 }
 

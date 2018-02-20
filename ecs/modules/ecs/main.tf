@@ -1,21 +1,21 @@
 module "ecs_instances" {
   source = "../ecs_instances"
 
-  environment             = "${var.environment}"
-  cluster                 = "${var.cluster}"
-  instance_group          = "${var.instance_group}"
-  private_subnet_ids      = "${var.private_subnet_ids}"
   aws_ami                 = "${var.ecs_aws_ami}"
-  instance_type           = "${var.instance_type}"
-  max_size                = "${var.max_size}"
-  min_size                = "${var.min_size}"
+  cloudwatch_prefix       = "${var.cloudwatch_prefix}"
+  cluster                 = "${var.cluster}"
+  custom_userdata         = "${var.custom_userdata}"
   desired_capacity        = "${var.desired_capacity}"
-  vpc_id                  = "${var.vpc_id}"
+  environment             = "${var.environment}"
   iam_instance_profile_id = "${aws_iam_instance_profile.ecs.id}"
+  instance_group          = "${var.instance_group}"
+  instance_type           = "${var.instance_type}"
   key_name                = "${var.key_name}"
   load_balancers          = "${var.load_balancers}"
-  custom_userdata         = "${var.custom_userdata}"
-  cloudwatch_prefix       = "${var.cloudwatch_prefix}"
+  max_size                = "${var.max_size}"
+  min_size                = "${var.min_size}"
+  private_subnet_ids      = "${var.private_subnet_ids}"
+  vpc_id                  = "${var.vpc_id}"
 }
 
 resource "aws_ecs_cluster" "cluster" {

@@ -16,12 +16,12 @@ variable "vpc_id" {
   description = "VPC cidr block. Example: 10.0.0.0/16"
 }
 
-variable "private_subnet_cidrs" {
+variable "private_subnet_ids" {
   type        = "list"
   description = "List of private cidrs, for every avalibility zone you want you need one. Example: 10.0.0.0/24 and 10.0.1.0/24"
 }
 
-variable "public_subnet_cidrs" {
+variable "public_subnet_ids" {
   type        = "list"
   description = "List of public cidrs, for every avalibility zone you want you need one. Example: 10.0.0.0/24 and 10.0.1.0/24"
 }
