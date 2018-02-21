@@ -45,8 +45,6 @@ resource "aws_autoscaling_group" "asg" {
   launch_configuration = "${aws_launch_configuration.launch.id}"
   vpc_zone_identifier  = ["${var.private_subnet_ids}"]
   load_balancers       = ["${var.load_balancers}"]
-
-  tags  = "${ merge( var.tags, map( "Name", var.cluster ), map( "Terraform", "true" ) ) }"
 }
 
 data "template_file" "user_data" {
