@@ -6,7 +6,6 @@ module "ecs_instances" {
   cluster                 = "${var.cluster}"
   custom_userdata         = "${var.custom_userdata}"
   desired_capacity        = "${var.desired_capacity}"
-  environment             = "${var.environment}"
   iam_instance_profile_id = "${aws_iam_instance_profile.ecs.id}"
   instance_group          = "${var.instance_group}"
   instance_type           = "${var.instance_type}"

@@ -1,10 +1,11 @@
-variable "alb_name" {
+variable "name" {
   default     = "default"
   description = "The name of the loadbalancer"
 }
 
-variable "environment" {
-  description = "The name of the environment"
+variable "cluster" {
+  default     = "default"
+  description = "The cluster to load balance"
 }
 
 variable "public_subnet_ids" {
@@ -29,4 +30,9 @@ variable "health_check_path" {
 variable "allow_cidr_block" {
   default     = "0.0.0.0/0"
   description = "Specify cird block that is allowd to acces the LoadBalancer"
+}
+
+variable "tags" {
+  type        = "map"
+  default     = { }
 }

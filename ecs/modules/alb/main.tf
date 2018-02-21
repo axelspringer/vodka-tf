@@ -1,7 +1,7 @@
 # Default ALB implementation that can be used connect ECS instances to it
 
 resource "aws_alb_target_group" "default" {
-  name                 = "${var.alb_name}-default"
+  name                 = "${var.cluster}-default"
   port                 = 80
   protocol             = "HTTP"
   vpc_id               = "${var.vpc_id}"
@@ -12,19 +12,15 @@ resource "aws_alb_target_group" "default" {
     protocol = "HTTP"
   }
 
-  tags {
-    Environment = "${var.environment}"
-  }
+
 }
 
 resource "aws_alb" "alb" {
-  name            = "${var.alb_name}"
+  name            = "${var.cluster}"
   subnets         = ["${var.public_subnet_ids}"]
   security_groups = ["${aws_security_group.alb.id}"]
 
-  tags {
-    Environment = "${var.environment}"
-  }
+
 }
 
 resource "aws_alb_listener" "https" {
@@ -39,12 +35,10 @@ resource "aws_alb_listener" "https" {
 }
 
 resource "aws_security_group" "alb" {
-  name   = "${var.alb_name}_alb"
+  name   = "${var.cluster}_alb"
   vpc_id = "${var.vpc_id}"
 
-  tags {
-    Environment = "${var.environment}"
-  }
+  tags  = "${ merge( var.tags, map( "Name", var.name ), map( "Terraform", "true" ) ) }"
 }
 
 resource "aws_security_group_rule" "https_from_anywhere" {

@@ -1,10 +1,11 @@
-variable "environment" {
-  description = "The name of the environment"
-}
-
 variable "cluster" {
   default     = "default"
   description = "The name of the ECS cluster"
+}
+
+variable "name" {
+  default     = "default"
+  description = ""
 }
 
 variable "instance_group" {

@@ -1,7 +1,3 @@
-variable "environment" {
-  description = "The name of the environment"
-}
-
 variable "cloudwatch_prefix" {
   default     = ""
   description = "If you want to avoid cloudwatch collision or you don't want to merge all logs to one log group specify a prefix"
@@ -77,4 +73,9 @@ variable "ecs_config" {
 variable "ecs_logging" {
   default     = "[\"json-file\",\"awslogs\"]"
   description = "Adding logging option to ECS that the Docker containers can use. It is possible to add fluentd as well"
+}
+
+variable "tags" {
+  type    = "map"
+  default = { }
 }
