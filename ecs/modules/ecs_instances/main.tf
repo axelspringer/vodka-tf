@@ -19,7 +19,7 @@ resource "aws_security_group_rule" "outbound_internet_access" {
 
 # Default disk size for Docker is 22 gig, see http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html
 resource "aws_launch_configuration" "launch" {
-  name_prefix          = "${var.cluster}_${var.instance_group}"
+  name_prefix          = "${var.cluster}-${var.instance_group}"
   image_id             = "${var.aws_ami}"
   instance_type        = "${var.instance_type}"
   security_groups      = ["${aws_security_group.instance.id}"]
@@ -37,7 +37,7 @@ resource "aws_launch_configuration" "launch" {
 
 # Instances are scaled across availability zones http://docs.aws.amazon.com/autoscaling/latest/userguide/auto-scaling-benefits.html
 resource "aws_autoscaling_group" "asg" {
-  name                 = "${var.cluster}_${var.instance_group}"
+  name                 = "${var.cluster}-${var.instance_group}"
   max_size             = "${var.max_size}"
   min_size             = "${var.min_size}"
   desired_capacity     = "${var.desired_capacity}"
@@ -46,7 +46,7 @@ resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier  = ["${var.private_subnet_ids}"]
   load_balancers       = ["${var.load_balancers}"]
 
-  tags  = ["${ merge( var.tags, map( "Name", var.cluster ), map( "Terraform", "true" ) ) }"]
+  tags  = "${ merge( var.tags, map( "Name", var.cluster ), map( "Terraform", "true" ) ) }"
 }
 
 data "template_file" "user_data" {
