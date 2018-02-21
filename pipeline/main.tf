@@ -26,12 +26,12 @@ resource "aws_codepipeline" "pipeline" {
       owner            = "ThirdParty"
       provider         = "GitHub"
       version          = "1"
-      output_artifacts = ["test"]
+      output_artifacts = ["${var.artifacts}"]
 
       configuration {
-        Owner  = "my-organization"
-        Repo   = "test"
-        Branch = "master"
+        Owner  = "${var.org}"
+        Repo   = "${var.repo}"
+        Branch = "${var.branch}"
       }
     }
   }
@@ -44,12 +44,24 @@ resource "aws_codepipeline" "pipeline" {
       category        = "Build"
       owner           = "AWS"
       provider        = "CodeBuild"
-      input_artifacts = ["test"]
+      input_artifacts = ["${var.artifacts}"]
       version         = "1"
 
       configuration {
-        ProjectName = "test"
+        ProjectName = "${var.name}"
       }
+    }
+  }
+
+  stage {
+    name = "Deploy"
+
+    action {
+      name            = "Deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "CodeDeploy"
+      version         = "1"
     }
   }
 }
