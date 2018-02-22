@@ -46,14 +46,14 @@ resource "aws_iam_role" "default" {
   name = "${var.cluster}_default_task"
   path = "/ecs/"
 
-  assume_role_policy = "${aws_iam_policy_document.role.json}"
+  assume_role_policy = "${data.aws_iam_policy_document.role.json}"
 }
 
 resource "aws_iam_policy" "default" {
   name = "${var.cluster}_ecs_default_task"
   path = "/"
 
-  policy = "${aws_iam_policy_document.policy.json}"
+  policy = "${data.aws_iam_policy_document.policy.json}"
 }
 
 resource "aws_iam_policy_attachment" "default" {
