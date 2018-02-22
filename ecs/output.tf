@@ -9,3 +9,7 @@ output "cluster_id" {
 output "cluster_arn" {
   value = "${module.ecs.cluster_arn}"
 }
+
+output "iam_role_arn" {
+  value = "${module.roles.iam_role_arn}"
+}

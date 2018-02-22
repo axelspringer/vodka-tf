@@ -18,3 +18,7 @@ variable "public_subnet_ids" {
 variable "availability_zones" {
   type = "list"
 }
+
+variable "_prefix" {
+  default = ""
+}

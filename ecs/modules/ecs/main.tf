@@ -17,6 +17,10 @@ module "ecs_instances" {
   vpc_id                  = "${var.vpc_id}"
 }
 
+module "ecs_roles" {
+  source = "../ecs_roles"
+}
+
 resource "aws_ecs_cluster" "cluster" {
   name = "${var.cluster}"
 }
