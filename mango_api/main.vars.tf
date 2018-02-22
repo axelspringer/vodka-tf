@@ -11,7 +11,7 @@ variable "size" {
   description = "The number of instances of the task definition to place and keep running"
 }
 
-variable "alb_arn" {
+variable "alb_target_group" {
   description = "The ARN of the ALB target group to associate with the service"
 }
 
