@@ -62,6 +62,11 @@ resource "aws_codepipeline" "pipeline" {
       owner           = "AWS"
       provider        = "CodeDeploy"
       version         = "1"
+    
+      configuration {
+        ClusterName = "${var.cluster}"
+        ServiceName = "${var.service}"
+      }
     }
   }
 }
