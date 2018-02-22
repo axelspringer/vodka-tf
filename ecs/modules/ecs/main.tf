@@ -23,4 +23,8 @@ module "ecs_roles" {
 
 resource "aws_ecs_cluster" "cluster" {
   name = "${var.cluster}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
