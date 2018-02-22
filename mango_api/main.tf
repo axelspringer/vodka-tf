@@ -15,10 +15,6 @@ data "template_file" "mango_definition" {
   }
 }
 
-resource "aws_ecs_cluster" "default" {
-  name = "${var.cluster_name}"
-}
-
 resource "aws_ecs_task_definition" "mango_api" {
   family = "mango"
 
