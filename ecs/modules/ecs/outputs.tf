@@ -3,9 +3,9 @@ output "default_alb_target_group" {
 }
 
 output "cluster_id" {
-  value = "${module.ecs.cluster_id}"
+  value = "${aws_ecs_cluster.cluster.id}"
 }
 
 output "cluster_arn" {
-  value = "${module.ecs.cluster_arn}"
+  value = "${aws_ecs_cluster.cluster.arn}"
 }
