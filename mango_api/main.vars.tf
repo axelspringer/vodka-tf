@@ -7,7 +7,7 @@ variable "cluster_name" {
 }
 
 variable "size" {
-  default     = 2
+  default     = 1
   description = "The number of instances of the task definition to place and keep running"
 }
 
@@ -21,7 +21,7 @@ variable "placement_strategy_type" {
 }
 
 variable "placement_strategy_field" {
-  default     = "cpu"
+  default = "cpu"
 }
 
 variable "placement_constraint_type" {
@@ -30,7 +30,7 @@ variable "placement_constraint_type" {
 }
 
 variable "placement_constraint_expression" {
-  default     = "attribute:ecs.availability-zone in [eu-west-1a, eu-west-1b]"
+  default     = "attribute:ecs.availability-zone in [eu-west-1a]"
   description = "luster Query Language expression to apply to the constraint. Does not need to be specified for the distinctInstance type."
 }
 
@@ -60,7 +60,20 @@ variable "disable_networking" {
 }
 
 variable "docker_labels" {
-  default     = { }
+  default     = {}
   type        = "map"
   description = "Set docker labels"
+}
+
+# ! private
+variable "_image" {
+  default = "axelspringer/mango-api"
+}
+
+variable "_container_name" {
+  default = "mango_api"
+}
+
+variable "_container_port" {
+  default = 8080
 }
