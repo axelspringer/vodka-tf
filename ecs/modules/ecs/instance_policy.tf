@@ -18,7 +18,7 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "ecs" {
-  name = "${var.cluster}_ecs_instance_profile"
+  name = "${var.cluster}-ecs"
   path = "/"
   role = "${aws_iam_role.ecs_instance_role.name}"
 }
