@@ -15,6 +15,29 @@ data "template_file" "mango_definition" {
   }
 }
 
+resource "aws_service_discovery_private_dns_namespace" "default" {
+  name        = "${var.dns_namespace}"
+  description = "${var.dns_description}"
+  vpc         = "${var.vpc_id}"
+}
+
+resource "aws_service_discovery_service" "default" {
+  name = "${var.name}"
+  dns_config {
+    namespace_id = "${aws_service_discovery_private_dns_namespace.default.id}"
+    dns_records {
+      ttl = 10
+      type = "A"
+    }
+  }
+
+  health_check_config {
+    failure_threshold = 100
+    resource_path = "path"
+    type = "HTTP"
+  }
+}
+
 resource "aws_ecs_task_definition" "mango_api" {
   family = "mango"
 

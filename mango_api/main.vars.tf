@@ -6,6 +6,15 @@ variable "cluster_name" {
   description = "ECS Cluster name"
 }
 
+variable "dns_namespace" {
+  description = "DNS Namespace for autodiscovery"
+}
+
+variable "dns_description" {
+  default     = ""
+  description = "DNS Description for autodiscovery"
+}
+
 variable "size" {
   default     = 1
   description = "The number of instances of the task definition to place and keep running"
@@ -21,7 +30,7 @@ variable "placement_strategy_type" {
 }
 
 variable "placement_strategy_field" {
-  default = "cpu"
+  default     = "cpu"
 }
 
 variable "placement_constraint_type" {
