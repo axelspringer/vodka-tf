@@ -7,23 +7,21 @@ resource "aws_alb_target_group" "default" {
   vpc_id               = "${var.vpc_id}"
   deregistration_delay = "${var.deregistration_delay}"
 
+  target_type = "ip"
+
   health_check {
     path     = "${var.health_check_path}"
     protocol = "HTTP"
   }
-
-
 }
 
 resource "aws_alb" "alb" {
   name            = "${var.cluster}"
   subnets         = ["${var.public_subnet_ids}"]
   security_groups = ["${aws_security_group.alb.id}"]
-
-
 }
 
-resource "aws_alb_listener" "https" {
+resource "aws_alb_listener" "http" {
   load_balancer_arn = "${aws_alb.alb.id}"
   port              = "80"
   protocol          = "HTTP"
@@ -38,7 +36,7 @@ resource "aws_security_group" "alb" {
   name   = "${var.cluster}_alb"
   vpc_id = "${var.vpc_id}"
 
-  tags  = "${ merge( var.tags, map( "Name", var.name ), map( "Terraform", "true" ) ) }"
+  tags = "${ merge( var.tags, map( "Name", var.name ), map( "Terraform", "true" ) ) }"
 }
 
 resource "aws_security_group_rule" "https_from_anywhere" {
