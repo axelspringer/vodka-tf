@@ -113,7 +113,7 @@ resource "aws_iam_policy" "default" {
 resource "aws_iam_group_policy_attachment" "default" {
   count       = "${length(var.groups)}"
   group       = "${element(var.groups, count.index)}"
-  policy_arn  = "${aws_iam_policy.default.arn}" 
+  policy_arn  = "${aws_iam_policy.default.arn}"
 }
 
 resource "aws_iam_role" "default" {
