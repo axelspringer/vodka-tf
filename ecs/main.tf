@@ -1,8 +1,10 @@
+# ECS
 module "ecs" {
   source = "modules/ecs"
 
+  branches           = ["${var.branches}"]
   availability_zones = "${var.availability_zones}"
-  cloudwatch_prefix  = "${var.name}"        #See ecs_instances module when to set this and when not!
+  cloudwatch_prefix  = "${var.name}"               #See ecs_instances module when to set this and when not!
   cluster            = "${var.name}"
   desired_capacity   = "${var.desired_capacity}"
   ecs_aws_ami        = "${var.ecs_aws_ami}"
@@ -16,7 +18,10 @@ module "ecs" {
   vpc_id             = "${var.vpc_id}"
 }
 
+# Roles
 module "roles" {
   source = "modules/ecs_roles"
-  cluster = "${var.name}"
+
+  cluster  = "${var.name}"
+  branches = "${var.branches}"
 }

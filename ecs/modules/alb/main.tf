@@ -1,7 +1,8 @@
 # Default ALB implementation that can be used connect ECS instances to it
 
 resource "aws_alb_target_group" "default" {
-  name                 = "${var.cluster}-default"
+  count                = "${length(var.branches)}"
+  name                 = "${var.cluster}-${element(var.branches, count.index)}"
   port                 = 80
   protocol             = "HTTP"
   vpc_id               = "${var.vpc_id}"
@@ -16,24 +17,26 @@ resource "aws_alb_target_group" "default" {
 }
 
 resource "aws_alb" "alb" {
-  name            = "${var.cluster}"
+  count           = "${length(var.branches)}"
+  name            = "${var.cluster}-${element(var.branches, count.index)}"
   subnets         = ["${var.public_subnet_ids}"]
   security_groups = ["${aws_security_group.alb.id}"]
 }
 
 resource "aws_alb_listener" "http" {
-  load_balancer_arn = "${aws_alb.alb.id}"
+  count             = "${length(var.branches)}"
+  load_balancer_arn = "${element(aws_alb.alb.*.id, count.index)}"
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = "${aws_alb_target_group.default.id}"
+    target_group_arn = "${element(aws_alb_target_group.default.*.id, count.index)}"
     type             = "forward"
   }
 }
 
 resource "aws_security_group" "alb" {
-  name   = "${var.cluster}_alb"
+  name   = "${var.cluster}-alb"
   vpc_id = "${var.vpc_id}"
 
   tags = "${ merge( var.tags, map( "Name", var.name ), map( "Terraform", "true" ) ) }"

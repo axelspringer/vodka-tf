@@ -7,6 +7,10 @@ variable "cluster" {
   description = "The name of the cluster"
 }
 
+variable "branches" {
+  type = "list"
+}
+
 variable "instance_group" {
   default     = "default"
   description = "The name of the instances that you consider as a group"
@@ -21,39 +25,34 @@ variable "aws_ami" {
 }
 
 variable "instance_type" {
-  default     = "t2.micro"
+  type        = "list"
   description = "AWS instance type to use"
 }
 
 variable "max_size" {
-  default     = 1
+  type        = "list"
   description = "Maximum size of the nodes in the cluster"
 }
 
 variable "min_size" {
-  default     = 1
+  type        = "list"
   description = "Minimum size of the nodes in the cluster"
 }
 
 #For more explenation see http://docs.aws.amazon.com/autoscaling/latest/userguide/WhatIsAutoScaling.html
 variable "desired_capacity" {
-  default     = 1
+  type        = "list"
   description = "The desired capacity of the cluster"
 }
 
-variable "iam_instance_profile_id" {
+variable "iam_instance_profile_ids" {
+  type        = "list"
   description = "The id of the instance profile that should be used for the instances"
 }
 
 variable "private_subnet_ids" {
   type        = "list"
   description = "The list of private subnets to place the instances in"
-}
-
-variable "load_balancers" {
-  type        = "list"
-  default     = []
-  description = "The load balancers to couple to the instances. Only used when NOT using ALB"
 }
 
 variable "key_name" {
@@ -77,5 +76,5 @@ variable "ecs_logging" {
 
 variable "tags" {
   type    = "map"
-  default = { }
+  default = {}
 }

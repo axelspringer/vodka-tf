@@ -1,10 +1,11 @@
 module "alb" {
   source = "../alb"
 
-  name              = "${var.name}"
+  branches          = "${var.branches}"
   cluster           = "${var.cluster}"
-  vpc_id            = "${var.vpc_id}"
+  name              = "${var.name}"
   public_subnet_ids = "${var.public_subnet_ids}"
+  vpc_id            = "${var.vpc_id}"
 }
 
 resource "aws_security_group_rule" "alb_to_ecs" {

@@ -1,11 +1,28 @@
-variable "desired_capacity"   { }
-variable "ecs_aws_ami"        { }
-variable "name"               { }
-variable "instance_type"      { }
-variable "max_size"           { }
-variable "min_size"           { }
-variable "vpc_id"             { }
-variable "key_name"           { }
+variable "desired_capacity" {
+  type = "list"
+}
+
+variable "branches" {
+  type = "list"
+}
+
+variable "ecs_aws_ami" {}
+variable "name" {}
+
+variable "instance_type" {
+  type = "list"
+}
+
+variable "max_size" {
+  type = "list"
+}
+
+variable "min_size" {
+  type = "list"
+}
+
+variable "vpc_id" {}
+variable "key_name" {}
 
 variable "private_subnet_ids" {
   type = "list"

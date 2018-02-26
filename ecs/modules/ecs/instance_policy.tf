@@ -1,34 +1,70 @@
-resource "aws_iam_role" "ecs_instance_role" {
-  name = "${var.cluster}_ecs_instance_role"
+data "aws_iam_policy_document" "ecs_instance_role_policy" {
+  statement {
+    sid = "EC2InstanceRole"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2008-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": ["ec2.amazonaws.com"]
-      },
-      "Effect": "Allow"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
     }
-  ]
+  }
 }
-EOF
+
+data "aws_iam_policy_document" "ecr_policy" {
+  statement {
+    sid = "1"
+
+    effect = "Allow"
+
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchGetImage",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetAuthorizationToken",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "ecs_instance_ecr" {
+  count  = "${length(var.branches)}"
+  name   = "${var.cluster}-${element(var.branches, count.index)}-ecs"
+  policy = "${data.aws_iam_policy_document.ecr_policy.json}"
+}
+
+resource "aws_iam_role" "ecs_instance_role" {
+  count = "${length(var.branches)}"
+  name  = "${var.cluster}-${element(var.branches, count.index)}-ecs-instance"
+
+  assume_role_policy = "${data.aws_iam_policy_document.ecs_instance_role_policy.json}"
 }
 
 resource "aws_iam_instance_profile" "ecs" {
-  name = "${var.cluster}-ecs"
-  path = "/"
-  role = "${aws_iam_role.ecs_instance_role.name}"
+  count = "${length(var.branches)}"
+  name  = "${var.cluster}-${element(var.branches, count.index)}-ecs"
+  path  = "/"
+  role  = "${element(aws_iam_role.ecs_instance_role.*.name, count.index)}"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_ec2_role" {
-  role       = "${aws_iam_role.ecs_instance_role.id}"
+  count      = "${length(var.branches)}"
+  role       = "${element(aws_iam_role.ecs_instance_role.*.id, count.index)}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_ec2_cloudwatch_role" {
-  role       = "${aws_iam_role.ecs_instance_role.id}"
+  count      = "${length(var.branches)}"
+  role       = "${element(aws_iam_role.ecs_instance_role.*.id, count.index)}"
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_ec2_ecr_role" {
+  count      = "${length(var.branches)}"
+  role       = "${element(aws_iam_role.ecs_instance_role.*.id, count.index)}"
+  policy_arn = "${element(aws_iam_policy.ecs_instance_ecr.*.id, count.index)}"
 }

@@ -1,15 +1,19 @@
-output "alb_target_group" {
-  value = "${module.ecs.default_alb_target_group}"
+output "alb_target_groups" {
+  value = "${module.ecs.default_alb_target_groups}"
 }
 
-output "id" {
-  value = "${module.ecs.cluster_id}"
+output "cluster_ids" {
+  value = "${module.ecs.cluster_ids}"
 }
 
-output "arn" {
-  value = "${module.ecs.cluster_arn}"
+output "cluster_arns" {
+  value = "${module.ecs.cluster_arns}"
 }
 
-output "iam_arn" {
+output "cluster_iam_arn" {
   value = "${module.roles.iam_role_arn}"
+}
+
+output "cluster_name" {
+  value = "${var.name}"
 }

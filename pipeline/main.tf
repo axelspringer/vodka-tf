@@ -136,8 +136,8 @@ resource "aws_codepipeline" "pipeline" {
       input_artifacts = ["${var.name}-${element(var.branches, count.index)}-build"]
 
       configuration {
-        ClusterName = "${var.ecs_cluster}"
-        ServiceName = "${var.ecs_service}"
+        ClusterName = "${var.name}-${element(var.branches, count.index)}"
+        ServiceName = "mango_api"
       }
     }
   }

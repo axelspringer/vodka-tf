@@ -8,6 +8,10 @@ variable "name" {
   description = ""
 }
 
+variable "branches" {
+  type = "list"
+}
+
 variable "instance_group" {
   default     = "default"
   description = "The name of the instances that you consider as a group"
@@ -39,14 +43,17 @@ variable "availability_zones" {
 }
 
 variable "max_size" {
+  type        = "list"
   description = "Maximum size of the nodes in the cluster"
 }
 
 variable "min_size" {
+  type        = "list"
   description = "Minimum size of the nodes in the cluster"
 }
 
 variable "desired_capacity" {
+  type        = "list"
   description = "The desired capacity of the cluster"
 }
 
@@ -55,6 +62,7 @@ variable "key_name" {
 }
 
 variable "instance_type" {
+  type        = "list"
   description = "AWS instance type to use"
 }
 

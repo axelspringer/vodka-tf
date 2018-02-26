@@ -1,24 +1,27 @@
-resource "aws_iam_role" "ecs_lb_role" {
-  name = "${var.cluster}_ecs_lb_role"
-  path = "/ecs/"
+data "aws_iam_policy_document" "ecs_lb_role" {
+  statement {
+    sid = "ECSLbRole"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2008-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": ["ecs.amazonaws.com"]
-      },
-      "Effect": "Allow"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs.amazonaws.com"]
     }
-  ]
+  }
 }
-EOF
+
+resource "aws_iam_role" "ecs_lb_role" {
+  count = "${length(var.branches)}"
+  name  = "${var.cluster}-${element(var.branches, count.index)}-ecs-lb"
+  path  = "/ecs/"
+
+  assume_role_policy = "${data.aws_iam_policy_document.ecs_lb_role.json}"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_lb" {
-  role       = "${aws_iam_role.ecs_lb_role.id}"
+  count      = "${length(var.branches)}"
+  role       = "${element(aws_iam_role.ecs_lb_role.*.id, count.index)}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
 }

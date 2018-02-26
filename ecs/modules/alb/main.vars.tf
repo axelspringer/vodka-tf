@@ -3,6 +3,10 @@ variable "name" {
   description = "The name of the loadbalancer"
 }
 
+variable "branches" {
+  type = "list"
+}
+
 variable "cluster" {
   default     = "default"
   description = "The cluster to load balance"
@@ -33,6 +37,6 @@ variable "allow_cidr_block" {
 }
 
 variable "tags" {
-  type        = "map"
-  default     = { }
+  type    = "map"
+  default = {}
 }

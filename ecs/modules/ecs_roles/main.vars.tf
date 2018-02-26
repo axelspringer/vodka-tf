@@ -1,6 +1,10 @@
 variable "cluster" {
-  default     = "default"
   description = "The name of the ECS cluster"
+}
+
+variable "branches" {
+  type        = "list"
+  description = "The branches to be used in the clusters"
 }
 
 variable "prefix" {

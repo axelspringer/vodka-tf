@@ -2,14 +2,6 @@ variable "name" {
   description = "Name of the pipeline"
 }
 
-variable "ecs_cluster" {
-  description = "ECS Cluster"
-}
-
-variable "ecs_service" {
-  description = "Service in the ECS cluster"
-}
-
 variable "org" {
   description = "Name of your organization"
 }
@@ -39,10 +31,58 @@ variable "ecr_groups" {
   default     = []
 }
 
-variable "max_image_count" {
+variable "ecr_max_image_count" {
   type        = "string"
   description = "How many Docker Image versions AWS ECR will store"
   default     = "7"
+}
+
+variable "ecs_availability_zones" {
+  type        = "list"
+  description = "Zones the ECS should run in"
+}
+
+variable "ecs_vpc_id" {
+  description = "VPC to use"
+}
+
+variable "ecs_ami" {
+  default     = "ami-880d64f1"                 # Add mapping to region
+  description = "AMI to use for the instances"
+}
+
+variable "ecs_instance_key_name" {
+  description = "SSH Key for the instance"
+}
+
+variable "ecs_instance_type" {
+  type        = "list"
+  description = "Instance types to use for the branch clusters"
+}
+
+variable "ecs_esired_capacity" {
+  type        = "list"
+  description = "Desired capacity of the branch in the cluster"
+}
+
+variable "ecs_max_size" {
+  type        = "list"
+  description = "Max size of the branch clusters"
+}
+
+variable "ecs_min_size" {
+  type        = "list"
+  description = "Min size of the branch clusters"
+}
+
+variable "ecs_private_subnet_ids" {
+  type        = "list"
+  description = "Private subnet ids to draw from"
+}
+
+variable "ecs_public_subnet_ids" {
+  type        = "list"
+  description = "Public subnet ids to draw from"
 }
 
 variable "build_compute_type" {

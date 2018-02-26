@@ -1,11 +1,11 @@
-output "default_alb_target_group" {
-  value = "${module.alb.default_alb_target_group}"
+output "default_alb_target_groups" {
+  value = "${module.alb.default_alb_target_groups}"
 }
 
-output "cluster_id" {
-  value = "${aws_ecs_cluster.cluster.id}"
+output "cluster_ids" {
+  value = "${aws_ecs_cluster.cluster.*.id}"
 }
 
-output "cluster_arn" {
-  value = "${aws_ecs_cluster.cluster.arn}"
+output "cluster_arns" {
+  value = "${aws_ecs_cluster.cluster.*.arn}"
 }
