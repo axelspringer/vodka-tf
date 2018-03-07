@@ -1014,9 +1014,6 @@
                         "-",
                         [
                             {
-                                "Ref": "AWS::Region"
-                            },
-                            {
                                 "Ref": "ProjectId"
                             }
                         ]
