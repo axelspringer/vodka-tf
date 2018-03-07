@@ -1,0 +1,1048 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Conditions": {
+        "CreateCodeBuildResources": {
+            "Fn::Equals": [
+                true,
+                true
+            ]
+        }
+    },
+    "Description": "${description}",
+    "Metadata": {
+        "AWS::CloudFormation::Interface": {
+            "ParameterGroups": [
+                {
+                    "Label": {
+                        "default": "Application"
+                    },
+                    "Parameters": [
+                        "ProjectId"
+                    ]
+                }
+            ]
+        },
+        "CodeBuildImage": "aws/codebuild/golang:1.7.3",
+        "CodeBuildImageOverride": "aws/codebuild/golang:1.7.3"
+    },
+    "Outputs": {
+        "LambdaTrustRole": {
+            "Description": "AWS role for AWS Lambda used for passRole to Lambda functions.",
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            {
+                                "Ref": "ProjectId"
+                            },
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            "LambdaTrustRole"
+                        ]
+                    ]
+                }
+            },
+            "Value": {
+                "Fn::GetAtt": [
+                    "LambdaTrustRole",
+                    "Arn"
+                ]
+            }
+        },
+        "Bucket": {
+            "Description": "AWS S3 Bucket used for the pipeline",
+            "Export": {
+                "Name": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            {
+                                "Ref": "ProjectId"
+                            },
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            "Bucket"
+                        ]
+                    ]
+                }
+            },
+            "Value": {
+                "Fn::Join": [
+                    "-",
+                    [
+                        {
+                            "Ref": "ProjectId"
+                        }
+                    ]
+                ]
+            }
+        }
+    },
+    "Parameters": {
+        "AppName": {
+            "Description": "Name of the application.",
+            "MaxLength": 100,
+            "MinLength": 1,
+            "Type": "String"
+        },
+        "ProjectId": {
+            "ConstraintDescription": "Project IDs must be between 2 and 25 characters, begin with a letter, and only contain lowercase letters, numbers, and hyphens (-).",
+            "Description": "Project ID.",
+            "Type": "String"
+        },
+        "RepositoryBranch": {
+            "Default": "master",
+            "Description": "GitHub branch name.",
+            "Type": "String"
+        },
+        "RepositoryEnableIssues": {
+            "AllowedValues": [
+                true,
+                false
+            ],
+            "Default": false,
+            "Description": "Whether the GitHub issues tile is enabled.",
+            "Type": "String"
+        },
+        "RepositoryName": {
+            "Description": "GitHub repository name.",
+            "MaxLength": 100,
+            "MinLength": 1,
+            "Type": "String"
+        },
+        "RepositoryProvider": {
+            "Default": "GitHub",
+            "Description": "Repository provider.",
+            "Type": "String"
+        },
+        "RepositoryProviderUserId": {
+            "Description": "GitHub user ID.",
+            "Type": "String"
+        },
+        "RepositoryProviderUsername": {
+            "Description": "GitHub user name.",
+            "Type": "String"
+        },
+        "RepositoryToken": {
+            "Description": "GitHub access token.",
+            "NoEcho": true,
+            "Type": "String"
+        },
+        "RepositoryURL": {
+            "Description": "GitHub repository URL.",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "CloudFormationTrustRole": {
+            "Description": "Creating service role in IAM for AWS CloudFormation",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "cloudformation.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "s3:PutObject",
+                                        "s3:GetObject",
+                                        "s3:GetObjectVersion"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:s3:::",
+                                                    {
+                                                        "Ref": "S3Bucket"
+                                                    }
+                                                ]
+                                            ]
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:s3:::",
+                                                    {
+                                                        "Ref": "S3Bucket"
+                                                    },
+                                                    "/*"
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Action": [
+                                        "lambda:CreateFunction",
+                                        "lambda:DeleteFunction",
+                                        "lambda:AddPermission",
+                                        "lambda:UpdateFunction",
+                                        "lambda:UpdateFunctionCode",
+                                        "lambda:GetFunction",
+                                        "lambda:GetFunctionConfiguration",
+                                        "lambda:UpdateFunctionConfiguration",
+                                        "lambda:RemovePermission",
+                                        "lambda:listTags",
+                                        "lambda:TagResource",
+                                        "lambda:UntagResource",
+                                        "apigateway:*",
+                                        "dynamodb:CreateTable",
+                                        "dynamodb:DeleteTable",
+                                        "dynamodb:DescribeTable",
+                                        "kinesis:CreateStream",
+                                        "kinesis:DeleteStream",
+                                        "kinesis:DescribeStream",
+                                        "sns:CreateTopic",
+                                        "sns:DeleteTopic",
+                                        "sns:ListTopics",
+                                        "sns:GetTopicAttributes",
+                                        "sns:SetTopicAttributes",
+                                        "s3:CreateBucket",
+                                        "s3:DeleteBucket",
+                                        "config:DescribeConfigRules",
+                                        "config:PutConfigRule",
+                                        "config:DeleteConfigRule"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Action": [
+                                        "iam:PassRole"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        {
+                                            "Fn::GetAtt": [
+                                                "LambdaTrustRole",
+                                                "Arn"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Action": [
+                                        "cloudformation:CreateChangeSet"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        "arn:aws:cloudformation:eu-west-1:aws:transform/Serverless-2016-10-31"
+                                    ]
+                                }
+                            ]
+                        },
+                        "PolicyName": "TFCloudFormationRolePolicy"
+                    }
+                ],
+                "RoleName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            "tf",
+                            {
+                                "Ref": "ProjectId"
+                            },
+                            "cloudformation"
+                        ]
+                    ]
+                }
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "CodeBuildPolicy": {
+            "Condition": "CreateCodeBuildResources",
+            "Description": "Setting IAM policy for service role for Amazon EC2 instances",
+            "Properties": {
+                "PolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": [
+                                "logs:CreateLogGroup",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": "*"
+                        },
+                        {
+                            "Action": [
+                                "s3:PutObject",
+                                "s3:GetObject",
+                                "s3:GetObjectVersion"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3Bucket"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3Bucket"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Action": [
+                                "kms:GenerateDataKey*",
+                                "kms:Encrypt",
+                                "kms:Decrypt"
+                            ],
+                            "Effect": "Allow",
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        ":",
+                                        [
+                                            "arn:aws:kms",
+                                            {
+                                                "Ref": "AWS::Region"
+                                            },
+                                            {
+                                                "Ref": "AWS::AccountId"
+                                            },
+                                            {
+                                                "Fn::Join": [
+                                                    "/",
+                                                    [
+                                                        "alias",
+                                                        "aws/s3"
+                                                    ]
+                                                ]
+                                            }
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "PolicyName": "TFCodeBuildPolicy",
+                "Roles": [
+                    {
+                        "Ref": "CodeBuildRole"
+                    }
+                ]
+            },
+            "Type": "AWS::IAM::Policy"
+        },
+        "CodeBuildProject": {
+            "Condition": "CreateCodeBuildResources",
+            "DependsOn": [
+                "CodeBuildPolicy"
+            ],
+            "Properties": {
+                "Artifacts": {
+                    "Packaging": "zip",
+                    "Type": "codepipeline"
+                },
+                "Description": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "AWS Terraform created CodeBuild Project for ",
+                            {
+                                "Ref": "AppName"
+                            }
+                        ]
+                    ]
+                },
+                "Environment": {
+                    "ComputeType": "small",
+                    "EnvironmentVariables": [
+                        {
+                            "Name": "S3_BUCKET",
+                            "Value": {
+                                "Ref": "S3Bucket"
+                            }
+                        }
+                    ],
+                    "Image": "aws/codebuild/golang:1.7.3",
+                    "Type": "container"
+                },
+                "Name": {
+                    "Ref": "ProjectId"
+                },
+                "ServiceRole": {
+                    "Ref": "CodeBuildRole"
+                },
+                "Source": {
+                    "Type": "codepipeline"
+                }
+            },
+            "Type": "AWS::CodeBuild::Project"
+        },
+        "CodeBuildRole": {
+            "Condition": "CreateCodeBuildResources",
+            "Description": "Creating service role in IAM for Amazon EC2 instances",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "codebuild.amazonaws.com"
+                            }
+                        }
+                    ]
+                },
+                "Path": "/",
+                "RoleName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            {
+                                "Ref": "ProjectId"
+                            },
+                            "build"
+                        ]
+                    ]
+                }
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "CodePipelineTrustRole": {
+            "Description": "Creating service role in IAM for AWS CodePipeline",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codepipeline.amazonaws.com"
+                                ]
+                            },
+                            "Sid": 1
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "s3:GetObject",
+                                        "s3:GetObjectVersion",
+                                        "s3:GetBucketVersioning",
+                                        "s3:PutObject"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:s3:::",
+                                                    {
+                                                        "Ref": "S3Bucket"
+                                                    }
+                                                ]
+                                            ]
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "arn:aws:s3:::",
+                                                    {
+                                                        "Ref": "S3Bucket"
+                                                    },
+                                                    "/*"
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Action": [
+                                        "codebuild:StartBuild",
+                                        "codebuild:BatchGetBuilds",
+                                        "codebuild:StopBuild"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        {
+                                            "Fn::GetAtt": [
+                                                "CodeBuildProject",
+                                                "Arn"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Action": [
+                                        "cloudformation:DescribeStacks",
+                                        "cloudformation:DescribeChangeSet",
+                                        "cloudformation:CreateChangeSet",
+                                        "cloudformation:DeleteChangeSet",
+                                        "cloudformation:ExecuteChangeSet"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        {
+                                            "Fn::Join": [
+                                                ":",
+                                                [
+                                                    "arn",
+                                                    "aws",
+                                                    "cloudformation",
+                                                    {
+                                                        "Ref": "AWS::Region"
+                                                    },
+                                                    {
+                                                        "Ref": "AWS::AccountId"
+                                                    },
+                                                    {
+                                                        "Fn::Join": [
+                                                            "/",
+                                                            [
+                                                                "stack",
+                                                                {
+                                                                    "Fn::Join": [
+                                                                        "-",
+                                                                        [
+                                                                            {
+                                                                                "Ref": "ProjectId"
+                                                                            },
+                                                                            "lambda"
+                                                                        ]
+                                                                    ]
+                                                                },
+                                                                "*"
+                                                            ]
+                                                        ]
+                                                    }
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Action": [
+                                        "iam:PassRole"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": [
+                                        {
+                                            "Fn::GetAtt": [
+                                                "CloudFormationTrustRole",
+                                                "Arn"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "PolicyName": "TFCodePipelineRolePolicy"
+                    }
+                ],
+                "RoleName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            {
+                                "Ref": "ProjectId"
+                            },
+                            "pipeline"
+                        ]
+                    ]
+                }
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "LambdaTrustRole": {
+            "Description": "Creating service role in IAM for AWS Lambda",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Statement": [
+                        {
+                            "Action": "sts:AssumeRole",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+                    "arn:aws:iam::aws:policy/service-role/AWSConfigRulesExecutionRole"
+                ],
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Effect": "Allow",
+                                    "Resource": "*"
+                                }
+                            ],
+                            "Version": "2012-10-17"
+                        },
+                        "PolicyName": "TFLambdaWorkerPolicy"
+                    }
+                ],
+                "RoleName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            {
+                                "Ref": "ProjectId"
+                            },
+                            "lambda"
+                        ]
+                    ]
+                }
+            },
+            "Type": "AWS::IAM::Role"
+        },
+        "ProjectPipeline": {
+            "DependsOn": [
+                "LambdaTrustRole",
+                "CodePipelineTrustRole",
+                "S3Bucket",
+                "CodeBuildProject",
+                "CloudFormationTrustRole"
+            ],
+            "Description": "Creating a deployment pipeline for your project in AWS CodePipeline",
+            "Properties": {
+                "ArtifactStore": {
+                    "Location": {
+                        "Ref": "S3Bucket"
+                    },
+                    "Type": "S3"
+                },
+                "Name": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            {
+                                "Ref": "ProjectId"
+                            },
+                            "pipeline"
+                        ]
+                    ]
+                },
+                "RoleArn": {
+                    "Fn::GetAtt": [
+                        "CodePipelineTrustRole",
+                        "Arn"
+                    ]
+                },
+                "Stages": [
+                    {
+                        "Actions": [
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Source",
+                                    "Owner": "ThirdParty",
+                                    "Provider": "GitHub",
+                                    "Version": 1
+                                },
+                                "Configuration": {
+                                    "Branch": {
+                                        "Ref": "RepositoryBranch"
+                                    },
+                                    "OAuthToken": {
+                                        "Ref": "RepositoryToken"
+                                    },
+                                    "Owner": {
+                                        "Ref": "RepositoryProviderUsername"
+                                    },
+                                    "Repo": {
+                                        "Ref": "RepositoryName"
+                                    }
+                                },
+                                "InputArtifacts": [],
+                                "Name": "ApplicationSource",
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": {
+                                            "Fn::Join": [
+                                                "-",
+                                                [
+                                                    {
+                                                        "Ref": "ProjectId"
+                                                    },
+                                                    "SourceArtifact"
+                                                ]
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "RunOrder": 1
+                            }
+                        ],
+                        "Name": "Source"
+                    },
+                    {
+                        "Actions": [
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Build",
+                                    "Owner": "AWS",
+                                    "Provider": "CodeBuild",
+                                    "Version": 1
+                                },
+                                "Configuration": {
+                                    "ProjectName": {
+                                        "Ref": "ProjectId"
+                                    }
+                                },
+                                "InputArtifacts": [
+                                    {
+                                        "Name": {
+                                            "Fn::Join": [
+                                                "-",
+                                                [
+                                                    {
+                                                        "Ref": "ProjectId"
+                                                    },
+                                                    "SourceArtifact"
+                                                ]
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "Name": "PackageExport",
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": {
+                                            "Fn::Join": [
+                                                "-",
+                                                [
+                                                    {
+                                                        "Ref": "ProjectId"
+                                                    },
+                                                    "BuildArtifact"
+                                                ]
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "RunOrder": 1
+                            }
+                        ],
+                        "Name": "Build"
+                    },
+                    {
+                        "Actions": [
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Deploy",
+                                    "Owner": "AWS",
+                                    "Provider": "CloudFormation",
+                                    "Version": 1
+                                },
+                                "Configuration": {
+                                    "ActionMode": "CHANGE_SET_REPLACE",
+                                    "Capabilities": "CAPABILITY_IAM",
+                                    "ChangeSetName": "pipeline-changeset",
+                                    "ParameterOverrides": {
+                                        "Fn::Join": [
+                                            "",
+                                            [
+                                                "{\"ProjectId\":\"",
+                                                {
+                                                    "Ref": "ProjectId"
+                                                },
+                                                "\"}"
+                                            ]
+                                        ]
+                                    },
+                                    "RoleArn": {
+                                        "Fn::GetAtt": [
+                                            "CloudFormationTrustRole",
+                                            "Arn"
+                                        ]
+                                    },
+                                    "StackName": {
+                                        "Fn::Join": [
+                                            "-",
+                                            [
+                                                {
+                                                    "Ref": "ProjectId"
+                                                },
+                                                "lambda"
+                                            ]
+                                        ]
+                                    },
+                                    "TemplatePath": {
+                                        "Fn::Join": [
+                                            "",
+                                            [
+                                                {
+                                                    "Ref": "ProjectId"
+                                                },
+                                                "-BuildArtifact",
+                                                "::template-export.yml"
+                                            ]
+                                        ]
+                                    }
+                                },
+                                "InputArtifacts": [
+                                    {
+                                        "Name": {
+                                            "Fn::Join": [
+                                                "-",
+                                                [
+                                                    {
+                                                        "Ref": "ProjectId"
+                                                    },
+                                                    "BuildArtifact"
+                                                ]
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "Name": "GenerateChangeSet",
+                                "OutputArtifacts": [],
+                                "RunOrder": 1
+                            },
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Deploy",
+                                    "Owner": "AWS",
+                                    "Provider": "CloudFormation",
+                                    "Version": 1
+                                },
+                                "Configuration": {
+                                    "ActionMode": "CHANGE_SET_EXECUTE",
+                                    "ChangeSetName": "pipeline-changeset",
+                                    "StackName": {
+                                        "Fn::Join": [
+                                            "-",
+                                            [
+                                                {
+                                                    "Ref": "ProjectId"
+                                                },
+                                                "lambda"
+                                            ]
+                                        ]
+                                    }
+                                },
+                                "InputArtifacts": [],
+                                "Name": "ExecuteChangeSet",
+                                "OutputArtifacts": [],
+                                "RunOrder": 2
+                            }
+                        ],
+                        "Name": "Deploy"
+                    }
+                ]
+            },
+            "Type": "AWS::CodePipeline::Pipeline"
+        },
+        "S3ArtifactBucketPolicy": {
+            "Description": "Setting Amazon S3 bucket policy for AWS CodePipeline access",
+            "Properties": {
+                "Bucket": {
+                    "Ref": "S3Bucket"
+                },
+                "PolicyDocument": {
+                    "Id": "SSEAndSSLPolicy",
+                    "Statement": [
+                        {
+                            "Action": [
+                                "s3:GetObject",
+                                "s3:GetObjectVersion",
+                                "s3:GetBucketVersioning"
+                            ],
+                            "Condition": {
+                                "Bool": {
+                                    "aws:SecureTransport": false
+                                }
+                            },
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": [
+                                    {
+                                        "Fn::GetAtt": [
+                                            "CodePipelineTrustRole",
+                                            "Arn"
+                                        ]
+                                    },
+                                    {
+                                        "Fn::GetAtt": [
+                                            "CodeBuildRole",
+                                            "Arn"
+                                        ]
+                                    },
+                                    {
+                                        "Fn::GetAtt": [
+                                            "CloudFormationTrustRole",
+                                            "Arn"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3Bucket"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3Bucket"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ],
+                            "Sid": "WhitelistedGet"
+                        },
+                        {
+                            "Action": [
+                                "s3:PutObject"
+                            ],
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": [
+                                    {
+                                        "Fn::GetAtt": [
+                                            "CodePipelineTrustRole",
+                                            "Arn"
+                                        ]
+                                    },
+                                    {
+                                        "Fn::GetAtt": [
+                                            "CodeBuildRole",
+                                            "Arn"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3Bucket"
+                                            }
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "S3Bucket"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ],
+                            "Sid": "WhitelistedPut"
+                        }
+                    ],
+                    "Version": "2012-10-17"
+                }
+            },
+            "Type": "AWS::S3::BucketPolicy"
+        },
+        "S3Bucket": {
+            "DeletionPolicy": "Delete",
+            "Description": "Creating Amazon S3 bucket for AWS CodePipeline artifacts",
+            "Properties": {
+                "BucketName": {
+                    "Fn::Join": [
+                        "-",
+                        [
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            {
+                                "Ref": "ProjectId"
+                            }
+                        ]
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Fn::Join": [
+                                "-",
+                                [
+                                    {
+                                        "Ref": "ProjectId"
+                                    },
+                                    "S3Bucket"
+                                ]
+                            ]
+                        }
+                    }
+                ],
+                "VersioningConfiguration": {
+                    "Status": "Enabled"
+                }
+            },
+            "Type": "AWS::S3::Bucket"
+        }
+    }
+}
