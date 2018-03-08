@@ -185,6 +185,8 @@
                   "lambda:listTags",
                   "lambda:TagResource",
                   "lambda:UntagResource",
+                  "ec2:DescribeSecurityGroups",
+                  "ec2:DescribeSubnets",
                   "apigateway:*",
                   "dynamodb:CreateTable",
                   "dynamodb:DeleteTable",
