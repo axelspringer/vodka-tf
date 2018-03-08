@@ -708,6 +708,18 @@
                         {
                           "Ref": "ProjectId"
                         },
+                        "\", VpcId\":\"",
+                        {
+                          "Ref": "VpcId"
+                        },
+                        "\", VpcSubnetIds\":\"",
+                        {
+                          "Ref": "VpcSubnetIds"
+                        },
+                        "\", VpcSecurityGroupIds\":\"",
+                        {
+                          "Ref": "VpcSecurityGroupIds"
+                        },
                         "\"}"
                       ]
                     ]
