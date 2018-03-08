@@ -708,17 +708,25 @@
                         {
                           "Ref": "ProjectId"
                         },
-                        "\", VpcId\":\"",
+                        "\",\"VpcId\":\"",
                         {
                           "Ref": "VpcId"
                         },
-                        "\", VpcSubnetIds\":\"",
+                        "\",\"VpcSubnetIds\":\"",
                         {
-                          "Ref": "VpcSubnetIds"
+                          "Fn::Join": [
+                            ",", {
+                              "Ref": "VpcSubnetIds"
+                            }
+                          ]
                         },
-                        "\", VpcSecurityGroupIds\":\"",
+                        "\",\"VpcSecurityGroupIds\":\"",
                         {
-                          "Ref": "VpcSecurityGroupIds"
+                          "Fn::Join": [
+                            ",", {
+                              "Ref": "VpcSecurityGroupIds"
+                            }
+                          ]
                         },
                         "\"}"
                       ]
