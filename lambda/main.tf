@@ -9,12 +9,12 @@ data "template_file" "default" {
 
 resource "aws_cloudformation_stack" "default" {
   count = "${length(var.github_branches)}"
-  name  = "${var._prefix_tf_lambda}-${var.name}-${element(var.github_branches, count.index)}"
+  name  = "${var._prefix}${var.name}-${element(var.github_branches, count.index)}"
 
   template_body = "${element(data.template_file.default.*.rendered, count.index)}"
 
   parameters {
-    ProjectId                  = "${var._prefix_tf_lambda}-${var.name}-${element(var.github_branches, count.index)}"
+    ProjectId                  = "${var._prefix}${var.name}-${element(var.github_branches, count.index)}"
     AppName                    = "${var.name}-${element(var.github_branches, count.index)}"
     VpcId                      = "${var.vpc_id}"
     VpcSubnetIds               = "${join(",", compact(var.vpc_subnet_ids))}"

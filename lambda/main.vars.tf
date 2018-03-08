@@ -69,6 +69,6 @@ variable "_on_failure" {
   default = "ROLLBACK"
 }
 
-variable "_prefix_tf_lambda" {
-  default = "tf-lambda"
+variable "_prefix" {
+  default = "tf-lambda-"
 }
