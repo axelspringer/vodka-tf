@@ -552,7 +552,8 @@
         },
         "ManagedPolicyArns": [
           "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-          "arn:aws:iam::aws:policy/service-role/AWSConfigRulesExecutionRole"
+          "arn:aws:iam::aws:policy/service-role/AWSConfigRulesExecutionRole",
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
         ],
         "Path": "/",
         "Policies": [{
