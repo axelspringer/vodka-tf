@@ -17,8 +17,8 @@ resource "aws_cloudformation_stack" "default" {
     ProjectId                  = "${var._prefix_tf_lambda}-${var.name}-${element(var.github_branches, count.index)}"
     AppName                    = "${var.name}-${element(var.github_branches, count.index)}"
     VpcId                      = "${var.vpc_id}"
-    VpcSubnetIds               = "${var.vpc_subnet_ids}"
-    VpcSecurityGroupIds        = "${var.vpc_security_group_ids}"
+    VpcSubnetIds               = ["${var.vpc_subnet_ids}"]
+    VpcSecurityGroupIds        = ["${var.vpc_security_group_ids}"]
     BuildImage                 = "${var.codebuild_image}"
     BuildType                  = "${var.codebuild_type}"
     RepositoryBranch           = "${element(var.github_branches, count.index)}"
