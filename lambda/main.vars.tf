@@ -1,34 +1,58 @@
 variable "name" {
-  description = "Name of the pipeline"
+  description = "Name of the lambda project"
 }
 
-variable "org" {
+variable "vpc_id" {
+  default = ""
+}
+
+variable "vpc_subnet_ids" {
+  type    = "list"
+  default = []
+}
+
+variable "vpc_security_group_ids" {
+  type    = "list"
+  default = []
+}
+
+variable "github_org" {
   description = "Name of your organization"
 }
 
-variable "repo" {
+variable "github_repo" {
   description = "Name of your repository"
 }
 
-variable "repo_url" {
+variable "github_repo_url" {
   description = "Name of your repository url"
 }
 
-variable "user_id" {
+variable "github_user_id" {
   description = "User id of the account"
 }
 
-variable "oauth_token" {
+variable "github_oauth_token" {
   description = "OAuth token to access the repository"
 }
 
-variable "branches" {
+variable "github_branches" {
   default = [
     "master",
     "develop",
   ]
 
   description = "The branches to be build"
+}
+
+variable "codebuild_image" {
+  default     = "aws/codebuild/golang:1.7.3"
+  description = "CodeBuild image to use"
+}
+
+variable "codebuild_type" {
+  default     = "small"
+  description = "CodeBuild instance type"
 }
 
 variable "description" {
