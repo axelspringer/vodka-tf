@@ -54,6 +54,11 @@ variable "vault_instance_type" {
   default     = "t2.micro"
 }
 
+variable "vault_elb_cidr_blocks" {
+  default     = ["0.0.0.0/0"]
+  description = "Vault enable Load Balancers"
+}
+
 variable "consul_instance_type" {
   description = "The type of EC2 Instance to run in the Consul ASG"
   default     = "t2.micro"
@@ -69,7 +74,17 @@ variable "vpc_id" {
   default     = ""
 }
 
-variable "vpc_subnet_ids" {
-  description = "The Ids of the VPC to deploy info"
+variable "availability_zones" {
+  default     = []
+  description = "The availability zones to deploy to."
+}
+
+variable "vpc_private_subnet_ids" {
+  description = "The private Ids of the VPC to deploy info"
+  default     = []
+}
+
+variable "vpc_public_subnet_ids" {
+  description = "The public Ids of the VPC to deploy info"
   default     = []
 }

@@ -1,8 +1,19 @@
+module "vault_elb" {
+  source = "vault-elb"
+
+  name = "${var.vault_cluster_name}"
+
+  vpc_id                      = "${data.aws_vpc.default.id}"
+  allowed_inbound_cidr_blocks = ["${var.vault_elb_cidr_blocks}"]
+  subnet_ids                  = ["${var.vpc_public_subnet_ids}"]
+  availability_zones          = ["${var.availability_zones}"]
+}
+
 module "vault_cluster" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
   # source = "github.com/hashicorp/terraform-aws-consul.git/modules/vault-cluster?ref=v0.0.1"
-  source = "../vault-cluster"
+  source = "vault-cluster"
 
   cluster_name  = "${var.vault_cluster_name}"
   cluster_size  = "${var.vault_cluster_size}"
@@ -12,7 +23,10 @@ module "vault_cluster" {
   user_data = "${data.template_file.user_data_vault_cluster.rendered}"
 
   vpc_id     = "${data.aws_vpc.default.id}"
-  subnet_ids = "${var.vpc_subnet_ids}"
+  subnet_ids = "${var.vpc_private_subnet_ids}"
+
+  # Tell each Vault server to register in the ELB.
+  load_balancers = ["${module.vault_elb.load_balancer_name}"]
 
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we *strongly*
   # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
@@ -69,7 +83,7 @@ module "consul_cluster" {
   user_data = "${data.template_file.user_data_consul.rendered}"
 
   vpc_id     = "${data.aws_vpc.default.id}"
-  subnet_ids = "${var.vpc_subnet_ids}"
+  subnet_ids = "${var.vpc_private_subnet_ids}"
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.

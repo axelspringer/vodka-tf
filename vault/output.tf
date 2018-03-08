@@ -58,6 +58,10 @@ output "vault_cluster_size" {
   value = "${var.vault_cluster_size}"
 }
 
+output "vault_dns_name" {
+  value = "${module.vault_elb.load_balancer_dns_name}"
+}
+
 output "launch_config_name_servers" {
   value = "${module.consul_cluster.launch_config_name}"
 }
