@@ -182,6 +182,7 @@ data "aws_iam_policy_document" "instance_policy" {
     actions = [
       "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:DescribeAutoScalingInstances",
+      "iam:GetInstanceProfile",
       "ec2:DescribeAvailabilityZones",
       "ec2:DescribeInstanceAttribute",
       "ec2:DescribeInstanceStatus",
