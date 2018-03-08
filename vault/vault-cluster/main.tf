@@ -157,7 +157,7 @@ resource "aws_iam_instance_profile" "instance_profile" {
 
 resource "aws_iam_role" "instance_role" {
   name_prefix        = "${var.cluster_name}"
-  assume_role_policy = "${data.aws_iam_policy_document.instance_role.json}"
+  assume_role_policy = "${data.aws_iam_policy_document.instance_assume_role.json}"
 
   # aws_iam_instance_profile.instance_profile in this module sets create_before_destroy to true, which means
   # everything it depends on, including this resource, must set it as well, or you'll get cyclic dependency errors
@@ -167,7 +167,32 @@ resource "aws_iam_role" "instance_role" {
   }
 }
 
-data "aws_iam_policy_document" "instance_role" {
+resource "aws_iam_role_policy" "instancce_policy" {
+  name   = "${var.cluster_name}"
+  role   = "${aws_iam_role.instance_role.id}"
+  policy = "${data.aws_iam_policy_document.instance_policy.json}"
+}
+
+data "aws_iam_policy_document" "instance_policy" {
+  statement {
+    sid       = "AllowSelfAssembly"
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "autoscaling:DescribeAutoScalingGroups",
+      "autoscaling:DescribeAutoScalingInstances",
+      "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeInstanceAttribute",
+      "ec2:DescribeInstanceStatus",
+      "ec2:DescribeInstances",
+      "ec2:DescribeVpcs",
+      "ec2:DescribeTags",
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "instance_assume_role" {
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
@@ -197,7 +222,8 @@ resource "aws_iam_role_policy" "vault_s3" {
 }
 
 data "aws_iam_policy_document" "vault_s3" {
-  count  = "${var.enable_s3_backend ? 1 : 0}"
+  count = "${var.enable_s3_backend ? 1 : 0}"
+
   statement {
     effect  = "Allow"
     actions = ["s3:*"]
