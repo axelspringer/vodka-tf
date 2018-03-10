@@ -121,12 +121,12 @@ variable "database_subnet_tags" {
 
 variable "vpn_subnet_tags" {
   description = "Additional tags for the VPN subnet"
-  default     = { }
+  default     = {}
 }
 
 variable "elasticache_subnet_tags" {
   description = "Additional tags for the elasticache subnets"
-  default     = { }
+  default     = {}
 }
 
 variable "create_vpn" {
@@ -134,5 +134,26 @@ variable "create_vpn" {
   default     = true
 }
 
+output "kms_master_key_arn" {
+  value = "${aws_kms_key.master.arn}"
+}
+
+output "kms_master_key_id" {
+  value = "${aws_kms_key.master.id}"
+}
+
+output "kms_master_key_alias" {
+  value = "${aws_kms_key.master_alias.id}"
+}
+
 # !private
-variable "_tags" { default = { terraform = "true" } }
+variable "_tags" {
+  default = {
+    terraform = "true"
+  }
+}
+
+#! private
+variable "_kms_deletion_window_in_days" {
+  default = 30
+}
