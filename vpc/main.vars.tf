@@ -143,7 +143,7 @@ output "kms_master_key_id" {
 }
 
 output "kms_master_key_alias" {
-  value = "${aws_kms_key.master_alias.id}"
+  value = "${aws_kms_alias.master_alias.id}"
 }
 
 # !private
