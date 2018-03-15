@@ -73,6 +73,11 @@ resource "aws_codebuild_project" "default" {
       name  = "REPOSITORY_GW_URI"
       value = "${element(aws_ecr_repository.gw.*.repository_url, count.index)}"
     }
+
+    environment_variable {
+      name  = "BUILD_BRANCH"
+      value = "${element(var.branches), count.index)}"
+    }
   }
 
   source {
