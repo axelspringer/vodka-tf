@@ -1,0 +1,5 @@
+{
+    "DashboardArn": "arn:aws:cloudwatch::188769813531:dashboard/axelspringer-ELB",
+    "DashboardBody": "{\"widgets\":[{\"type\":\"metric\",\"x\":0,\"y\":0,\"width\":24,\"height\":6,\"properties\":{\"view\":\"timeSeries\",\"stacked\":true,\"metrics\":[[\"AWS/ELB\",\"HealthyHostCount\"],[\".\",\"Latency\"],[\".\",\"RequestCount\",{\"stat\":\"Sum\"}],[\".\",\"SurgeQueueLength\",{\"stat\":\"Sum\"}],[\".\",\"UnHealthyHostCount\",{\"stat\":\"Sum\"}]],\"region\":\"eu-west-1\"}},{\"type\":\"metric\",\"x\":0,\"y\":6,\"width\":24,\"height\":3,\"properties\":{\"view\":\"singleValue\",\"metrics\":[[\"AWS/ELB\",\"HealthyHostCount\"],[\".\",\"Latency\"],[\".\",\"RequestCount\",{\"stat\":\"Sum\"}],[\".\",\"SurgeQueueLength\",{\"stat\":\"Sum\"}],[\".\",\"UnHealthyHostCount\",{\"stat\":\"Sum\"}]],\"region\":\"eu-west-1\"}}]}",
+    "DashboardName": "axelspringer-ELB"
+}

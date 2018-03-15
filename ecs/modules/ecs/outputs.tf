@@ -1,5 +1,5 @@
-output "default_alb_target_groups" {
-  value = "${module.alb.default_alb_target_groups}"
+output "ecs_instance_security_group_id" {
+  value = "${module.ecs_instances.ecs_instance_security_group_id}"
 }
 
 output "cluster_ids" {

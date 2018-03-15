@@ -70,6 +70,14 @@
       "Description": "VPC subnet ids.",
       "Type": "List<AWS::EC2::Subnet::Id>"
     },
+    "KMSParameterArn": {
+      "Description": "KMS key used to encrypt paramaters in the SSM.",
+      "Type": "String"
+    },
+    "SSMParameterPrefix": {
+      "Description": "SSM parameter prefix used for the services",
+      "Type": "String"
+    },
     "BuildImage": {
       "Default": "aws/codebuild/golang:1.7.3",
       "Description": "GitHub branch name.",
@@ -103,10 +111,6 @@
     "RepositoryProvider": {
       "Default": "GitHub",
       "Description": "Repository provider.",
-      "Type": "String"
-    },
-    "RepositoryProviderUserId": {
-      "Description": "GitHub user ID.",
       "Type": "String"
     },
     "RepositoryProviderUsername": {
@@ -185,9 +189,11 @@
                   "lambda:listTags",
                   "lambda:TagResource",
                   "lambda:UntagResource",
+                  "events:*",
                   "ec2:DescribeSecurityGroups",
                   "ec2:DescribeSubnets",
                   "ec2:DescribeVpcs",
+                  "ec2:DescribeNetworkInterfaces",
                   "apigateway:*",
                   "dynamodb:CreateTable",
                   "dynamodb:DeleteTable",
@@ -553,20 +559,117 @@
         "ManagedPolicyArns": [
           "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
           "arn:aws:iam::aws:policy/service-role/AWSConfigRulesExecutionRole",
-          "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole",
+          "arn:aws:iam::aws:policy/CloudWatchEventsFullAccess",
+          "arn:aws:iam::aws:policy/AmazonRoute53FullAccess",
+          "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
         ],
         "Path": "/",
         "Policies": [{
           "PolicyDocument": {
             "Statement": [{
-              "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-              ],
-              "Effect": "Allow",
-              "Resource": "*"
-            }],
+                "Action": [
+                  "logs:*"
+                ],
+                "Effect": "Allow",
+                "Resource": "arn:aws:logs:*:*:*"
+              },
+              {
+                "Action": [
+                  "ec2:CreateNetworkInterface",
+                  "ec2:DescribeNetworkInterfaces",
+                  "ec2:DeleteNetworkInterface"
+                ],
+                "Effect": "Allow",
+                "Resource": "*"
+              },
+              {
+                "Action": [
+                  "iam:PassRole"
+                ],
+                "Effect": "Allow",
+                "Resource": "arn:aws:iam::188769813531:role/axelspringer-prod-task-*"
+              },
+              {
+                "Action": [
+                  "codepipeline:PutJobSuccessResult",
+                  "codepipeline:PutJobFailureResult"
+                ],
+                "Effect": "Allow",
+                "Resource": "*"
+              },
+              {
+                "Action": [
+                  "ecs:*"
+                ],
+                "Effect": "Allow",
+                "Resource": "*"
+              },
+              {
+                "Action": [
+                  "kms:Decrypt"
+                ],
+                "Effect": "Allow",
+                "Resource": [{
+                  "Ref": "KMSParameterArn"
+                }]
+              },
+              {
+                "Action": [
+                  "ssm:GetParameters",
+                  "ssm:GetParametersByPath"
+                ],
+                "Effect": "Allow",
+                "Resource": [{
+                    "Fn::Join": [
+                      ":", [
+                        "arn:aws:ssm",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        {
+                          "Fn::Join": [
+                            "/", [
+                              "parameter",
+                              {
+                                "Ref": "ProjectId"
+                              },
+                              "*"
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  },
+                  {
+                    "Fn::Join": [
+                      ":", [
+                        "arn:aws:ssm",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        {
+                          "Fn::Join": [
+                            "/", [
+                              "parameter",
+                              {
+                                "Ref": "ProjectId"
+                              }
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ],
             "Version": "2012-10-17"
           },
           "PolicyName": "TFLambdaWorkerPolicy"

@@ -9,12 +9,14 @@ data "template_file" "default" {
 
 resource "aws_cloudformation_stack" "default" {
   count = "${length(var.github_branches)}"
-  name  = "${var._prefix}${var.name}-${element(var.github_branches, count.index)}"
+  name  = "${var.name}-${element(var.github_branches, count.index)}"
 
   template_body = "${element(data.template_file.default.*.rendered, count.index)}"
 
   parameters {
-    ProjectId                  = "${var._prefix}${var.name}-${element(var.github_branches, count.index)}"
+    ProjectId                  = "${var.name}-${element(var.github_branches, count.index)}"
+    KMSParameterArn            = "${var.kms_master_key_arn}"
+    SSMParameterPrefix         = "${var.name}"                                              # we use this project as prefix
     AppName                    = "${var.name}-${element(var.github_branches, count.index)}"
     VpcId                      = "${var.vpc_id}"
     VpcSubnetIds               = "${join(",", compact(var.vpc_subnet_ids))}"
@@ -23,7 +25,6 @@ resource "aws_cloudformation_stack" "default" {
     BuildType                  = "${var.codebuild_type}"
     RepositoryBranch           = "${element(var.github_branches, count.index)}"
     RepositoryName             = "${var.github_repo}"
-    RepositoryProviderUserId   = "${var.github_user_id}"
     RepositoryProviderUsername = "${var.github_org}"
     RepositoryToken            = "${var.github_oauth_token}"
     RepositoryURL              = "${var.github_repo_url}"

@@ -4,6 +4,11 @@ variable "desired_capacity" {
 
 variable "branches" {
   type = "list"
+
+  default = [
+    "master",
+    "develop",
+  ]
 }
 
 variable "ecs_aws_ami" {}

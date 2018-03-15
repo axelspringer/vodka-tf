@@ -1,5 +1,5 @@
-output "alb_target_groups" {
-  value = "${module.ecs.default_alb_target_groups}"
+output "cluster_instance_security_group_id" {
+  value = "${module.ecs.ecs_instance_security_group_id}"
 }
 
 output "cluster_ids" {
@@ -16,4 +16,12 @@ output "cluster_iam_arn" {
 
 output "cluster_name" {
   value = "${var.name}"
+}
+
+output "cluster_discovery_zone_id" {
+  value = "${module.discovery.discovery_zone_id}"
+}
+
+output "cluster_discovery_servers" {
+  value = "${module.discovery.discovery_servers}"
 }

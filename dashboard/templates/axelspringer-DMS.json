@@ -1,0 +1,5 @@
+{
+    "DashboardArn": "arn:aws:cloudwatch::188769813531:dashboard/axelspringer-DMS",
+    "DashboardBody": "{\"widgets\":[{\"type\":\"metric\",\"x\":0,\"y\":0,\"width\":24,\"height\":3,\"properties\":{\"view\":\"singleValue\",\"stacked\":true,\"metrics\":[[\"AWS/DMS\",\"FreeStorageSpace\",\"InstanceClass\",\"db.t2.medium\"],[\".\",\"SwapUsage\",\".\",\".\"],[\".\",\"FreeableMemory\",\".\",\".\"],[\".\",\"NetworkTransmitThroughput\",\".\",\".\"],[\".\",\"NetworkReceiveThroughput\",\".\",\".\"]],\"region\":\"eu-west-1\"}},{\"type\":\"metric\",\"x\":0,\"y\":3,\"width\":24,\"height\":3,\"properties\":{\"view\":\"singleValue\",\"metrics\":[[\"AWS/DMS\",\"CPUUtilization\",\"InstanceClass\",\"db.t2.medium\"],[\".\",\"CPUCreditUsage\",\".\",\".\"],[\".\",\"CPUCreditBalance\",\".\",\".\"]],\"region\":\"eu-west-1\"}}]}",
+    "DashboardName": "axelspringer-DMS"
+}

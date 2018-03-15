@@ -16,6 +16,10 @@ variable "vpc_security_group_ids" {
   default = []
 }
 
+variable "kms_master_key_arn" {
+  description = "Arn of the parameter kms keys to be used for encryption"
+}
+
 variable "github_org" {
   description = "Name of your organization"
 }
@@ -26,10 +30,6 @@ variable "github_repo" {
 
 variable "github_repo_url" {
   description = "Name of your repository url"
-}
-
-variable "github_user_id" {
-  description = "User id of the account"
 }
 
 variable "github_oauth_token" {
@@ -67,8 +67,4 @@ variable "tags" {
 #! private
 variable "_on_failure" {
   default = "ROLLBACK"
-}
-
-variable "_prefix" {
-  default = "tf-lambda-"
 }

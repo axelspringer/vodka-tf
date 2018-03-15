@@ -3,6 +3,8 @@ variable "name" {
   description = "The name of the loadbalancer"
 }
 
+variable "instance_security_group_id" {}
+
 variable "branches" {
   type = "list"
 }

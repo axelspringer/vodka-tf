@@ -18,6 +18,14 @@ module "ecs" {
   vpc_id             = "${var.vpc_id}"
 }
 
+module "discovery" {
+  source = "modules/discovery"
+
+  name    = "tortuga.local"
+  comment = "${var.name}"
+  vpc_id  = "${var.vpc_id}"
+}
+
 # Roles
 module "roles" {
   source = "modules/ecs_roles"
