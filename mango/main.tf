@@ -1,15 +1,18 @@
 data "aws_ecs_task_definition" "gw" {
-  task_definition = "${aws_ecs_task_definition.gw.family}"
+  count           = "${length(var.branches)}"
+  task_definition = "${element(aws_ecs_task_definition.ssr.*.family, count.index)}"
   depends_on      = ["aws_ecs_task_definition.gw"]
 }
 
 data "aws_ecs_task_definition" "ssr" {
-  task_definition = "${aws_ecs_task_definition.ssr.family}"
+  count           = "${length(var.branches)}"
+  task_definition = "${element(aws_ecs_task_definition.ssr.*.family, count.index)}"
   depends_on      = ["aws_ecs_task_definition.ssr"]
 }
 
 data "aws_ecs_task_definition" "wp" {
-  task_definition = "${aws_ecs_task_definition.wp.family}"
+  count           = "${length(var.branches)}"
+  task_definition = "${element(aws_ecs_task_definition.wp.*.family, count.index)}"
   depends_on      = ["aws_ecs_task_definition.wp"]
 }
 
@@ -50,7 +53,9 @@ data "template_file" "wp" {
 }
 
 resource "aws_ecs_task_definition" "gw" {
-  family = "mango-gw"
+  count = "${length(var.branches)}"
+
+  family = "mango-gw-${element(var.branches, count.index)}"
 
   container_definitions = "${data.template_file.gw.rendered}"
   network_mode          = "bridge"
@@ -64,7 +69,9 @@ resource "aws_ecs_task_definition" "gw" {
 }
 
 resource "aws_ecs_task_definition" "ssr" {
-  family = "mango-ssr"
+  count = "${length(var.branches)}"
+
+  family = "mango-ssr-${element(var.branches, count.index)}"
 
   container_definitions = "${data.template_file.ssr.rendered}"
   network_mode          = "bridge"
@@ -78,7 +85,9 @@ resource "aws_ecs_task_definition" "ssr" {
 }
 
 resource "aws_ecs_task_definition" "wp" {
-  family = "mango-wp"
+  count = "${length(var.branches)}"
+
+  family = "mango-wp-${element(var.branches, count.index)}"
 
   container_definitions = "${data.template_file.wp.rendered}"
   network_mode          = "bridge"
@@ -93,10 +102,10 @@ resource "aws_ecs_task_definition" "wp" {
 
 resource "aws_ecs_service" "ssr" {
   count           = "${length(var.cluster_ids)}"
-  name            = "mango-ssr"
+  name            = "mango-ssr-${element(var.branches, count.index)}"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
-  task_definition = "${aws_ecs_task_definition.ssr.family}:${max("${aws_ecs_task_definition.ssr.revision}", "${data.aws_ecs_task_definition.ssr.revision}")}"
+  task_definition = "${element(aws_ecs_task_definition.ssr.*.family, count.index)}:${max("${element(aws_ecs_task_definition.ssr.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.ssr.*.revision, count.index)}")}"
 
   # iam_role        = "${aws_iam_role.default.arn}"
 
@@ -118,10 +127,10 @@ resource "aws_ecs_service" "ssr" {
 
 resource "aws_ecs_service" "wp" {
   count           = "${length(var.cluster_ids)}"
-  name            = "mango-wp"
+  name            = "mango-wp-${element(var.branches, count.index)}"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
-  task_definition = "${aws_ecs_task_definition.wp.family}:${max("${aws_ecs_task_definition.wp.revision}", "${data.aws_ecs_task_definition.wp.revision}")}"
+  task_definition = "${element(aws_ecs_task_definition.wp.*.family, count.index)}:${max("${element(aws_ecs_task_definition.wp.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.wp.*.revision, count.index)}")}"
 
   # iam_role        = "${aws_iam_role.default.arn}"
 
@@ -143,10 +152,10 @@ resource "aws_ecs_service" "wp" {
 
 resource "aws_ecs_service" "gateway" {
   count           = "${length(var.cluster_ids)}"
-  name            = "mango-gateway"
+  name            = "mango-gateway-${element(var.branches, count.index)}"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
-  task_definition = "${aws_ecs_task_definition.gw.family}:${max("${aws_ecs_task_definition.gw.revision}", "${data.aws_ecs_task_definition.gw.revision}")}"
+  task_definition = "${element(aws_ecs_task_definition.gw.*.family, count.index)}:${max("${element(aws_ecs_task_definition.gw.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.gw.*.revision, count.index)}")}"
 
   # iam_role        = "${aws_iam_role.default.arn}"
 
