@@ -44,3 +44,8 @@ variable "availability_zones" {
 variable "_prefix" {
   default = ""
 }
+
+# ! private
+variable "_route53_discovery_zone" {
+  default = "konsum.local"
+}

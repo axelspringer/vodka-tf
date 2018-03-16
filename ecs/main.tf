@@ -21,7 +21,7 @@ module "ecs" {
 module "discovery" {
   source = "modules/discovery"
 
-  name    = "tortuga.local"
+  name    = "${var._route53_discovery_zone}"
   comment = "${var.name}"
   vpc_id  = "${var.vpc_id}"
 }
