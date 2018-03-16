@@ -152,7 +152,7 @@ resource "aws_ecs_service" "wp" {
 
 resource "aws_ecs_service" "gateway" {
   count           = "${length(var.cluster_ids)}"
-  name            = "mango-gateway-${element(var.branches, count.index)}"
+  name            = "mango-gw-${element(var.branches, count.index)}"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
   task_definition = "${element(aws_ecs_task_definition.gw.*.family, count.index)}:${max("${element(aws_ecs_task_definition.gw.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.gw.*.revision, count.index)}")}"
