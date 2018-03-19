@@ -1,6 +1,6 @@
 #--------------------------------------------------------------
 # Recipe
-# 
+#
 # + get res vpc
 # + get res vpc internet gateway
 # + get res vpc routing table
@@ -76,10 +76,10 @@ resource "aws_route_table" "private" {
 
 # + get res vpc vpn route
 resource "aws_route_table" "vpn" {
-  count               = "${var.create_vpn}"
-  vpc_id              = "${aws_vpc.mod.id}"
-  propagating_vgws    = ["${var.vpn_propagating_vgws}"]
-  tags                = "${merge(var._tags, var.tags, map("Name", format("%s-vpn", var.name)))}"
+  count            = "${var.create_vpn}"
+  vpc_id           = "${aws_vpc.mod.id}"
+  propagating_vgws = ["${var.vpn_propagating_vgws}"]
+  tags             = "${merge(var._tags, var.tags, map("Name", format("%s-vpn", var.name)))}"
 }
 
 # + get res vpc subnet private
@@ -102,10 +102,10 @@ resource "aws_subnet" "database" {
 
 # + get res vpc subnet vpn
 resource "aws_subnet" "vpn" {
-  count               = "${var.create_vpn}"
-  vpc_id              = "${aws_vpc.mod.id}"
-  cidr_block          = "${var.vpn_subnet}"
-  tags                = "${merge(var._tags, var.tags, var.vpn_subnet_tags, map("Name", format("%s-vpn-%s", var.name, element(var.azs, 0))))}"
+  count      = "${var.create_vpn}"
+  vpc_id     = "${aws_vpc.mod.id}"
+  cidr_block = "${var.vpn_subnet}"
+  tags       = "${merge(var._tags, var.tags, var.vpn_subnet_tags, map("Name", format("%s-vpn-%s", var.name, element(var.azs, 0))))}"
 }
 
 # + get res vpc subnet group database
@@ -157,7 +157,7 @@ resource "aws_nat_gateway" "natgw" {
   subnet_id     = "${element(aws_subnet.public.*.id, (var.single_nat_gateway ? 0 : count.index))}"
   count         = "${var.enable_nat_gateway ? (var.single_nat_gateway ? 1 : length(var.azs)) : 0}"
 
-  depends_on = ["aws_internet_gateway.mod"]
+  depends_on = ["aws_internet_gateway.mod", "aws_route_table.private"]
 }
 
 data "aws_vpc_endpoint_service" "s3" {
@@ -173,7 +173,7 @@ resource "aws_vpc_endpoint" "ep" {
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
   count           = "${var.enable_s3_endpoint ? length(var.private_subnets) : 0}"
   vpc_endpoint_id = "${aws_vpc_endpoint.ep.id}"
-  route_table_id = "${element(aws_route_table.private.*.id, count.index)}"
+  route_table_id  = "${element(aws_route_table.private.*.id, count.index)}"
 }
 
 resource "aws_vpc_endpoint_route_table_association" "public_s3" {

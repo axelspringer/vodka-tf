@@ -1,6 +1,6 @@
 data "aws_ecs_task_definition" "gw" {
   count           = "${length(var.branches)}"
-  task_definition = "${element(aws_ecs_task_definition.ssr.*.family, count.index)}"
+  task_definition = "${element(aws_ecs_task_definition.gw.*.family, count.index)}"
   depends_on      = ["aws_ecs_task_definition.gw"]
 }
 

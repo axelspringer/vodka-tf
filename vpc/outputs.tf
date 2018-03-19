@@ -6,8 +6,8 @@ output "database_subnets" {
   value = ["${aws_subnet.database.*.id}"]
 }
 
-output "vpn_subnet_ids" {
-  value = "${aws_subnet.vpn.*.id}"
+output "vpn_subnet_id" {
+  value = "${length(aws_subnet.vpn.*.id) > 0 ? element(concat(aws_subnet.vpn.*.id, list("")), 0) : ""}"
 }
 
 output "database_subnet_group" {

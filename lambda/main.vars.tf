@@ -20,6 +20,11 @@ variable "kms_master_key_arn" {
   description = "Arn of the parameter kms keys to be used for encryption"
 }
 
+variable "ssm_parameters" {
+  type    = "map"
+  default = {}
+}
+
 variable "github_org" {
   description = "Name of your organization"
 }
