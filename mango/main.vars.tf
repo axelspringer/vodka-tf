@@ -12,6 +12,11 @@ variable "branches" {
   ]
 }
 
+variable "route53_zone" {
+  default     = "tortuga.services"
+  description = "Route 53 Zone to use for external use"
+}
+
 variable "cluster_name" {
   description = "ECS Cluster name"
 }
@@ -154,6 +159,10 @@ variable "docker_labels" {
 # ! private
 variable "_image" {
   default = "axelspringer/nginx"
+}
+
+variable "_evaluate_target_health" {
+  default = true
 }
 
 variable "_container_port" {

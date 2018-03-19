@@ -17,6 +17,7 @@ resource "aws_alb" "alb" {
   name            = "${var.name}-${element(var.branches, count.index)}"
   subnets         = ["${var.public_subnet_ids}"]
   security_groups = ["${aws_security_group.alb.id}"]
+  enable_http2    = "${var._enable_http2}"
 }
 
 resource "aws_alb_listener" "http" {

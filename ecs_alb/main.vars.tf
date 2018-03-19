@@ -38,6 +38,10 @@ variable "allow_cidr_block" {
   description = "Specify cird block that is allowd to acces the LoadBalancer"
 }
 
+variable "_enable_http2" {
+  default = true
+}
+
 variable "tags" {
   type    = "map"
   default = {}
