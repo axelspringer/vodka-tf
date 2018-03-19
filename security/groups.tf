@@ -16,6 +16,12 @@ resource "aws_iam_group" "admins" {
   path = "/users/"
 }
 
+# + get resource IAM Group for Consumers
+resource "aws_iam_group" "devs" {
+  name = "${var.project}-${terraform.workspace}-devs"
+  path = "/users/"
+}
+
 # + get resource IAM Group for DevOps
 resource "aws_iam_group" "ops" {
   name = "${var.project}-${terraform.workspace}-ops"

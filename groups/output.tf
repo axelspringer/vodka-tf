@@ -3,11 +3,6 @@ output "admins_id" {
   description = "The group's ID."
 }
 
-output "admins_uuid" {
-  value       = "${aws_iam_group.admins.unique_id}"
-  description = "The unique ID assigned by AWS."
-}
-
 output "admins_name" {
   value       = "${aws_iam_group.admins.name}"
   description = "The group's name."
@@ -23,17 +18,27 @@ output "devs_id" {
   description = "The group's ID."
 }
 
-output "devs_uuid" {
-  value       = "${aws_iam_group.devs.unique_id}"
-  description = "The unique ID assigned by AWS."
-}
-
 output "devs_name" {
   value       = "${aws_iam_group.devs.name}"
   description = "The group's name."
 }
 
 output "devs_arn" {
+  value       = "${aws_iam_group.devs.arn}"
+  description = "The ARN assigned by AWS for this group."
+}
+
+output "ops_id" {
+  value       = "${aws_iam_group.devs.id}"
+  description = "The group's ID."
+}
+
+output "ops_name" {
+  value       = "${aws_iam_group.devs.name}"
+  description = "The group's name."
+}
+
+output "ops_arn" {
   value       = "${aws_iam_group.devs.arn}"
   description = "The ARN assigned by AWS for this group."
 }
