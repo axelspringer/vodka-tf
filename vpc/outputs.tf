@@ -11,7 +11,7 @@ output "vpn_subnet_id" {
 }
 
 output "database_subnet_group" {
-  value = "${aws_db_subnet_group.database.*.id}"
+  value = ["${aws_db_subnet_group.database.*.id}"]
 }
 
 output "public_subnets" {
