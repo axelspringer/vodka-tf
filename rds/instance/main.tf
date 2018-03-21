@@ -40,7 +40,7 @@ resource "aws_db_instance" "default" {
   maintenance_window          = "${var.maintenance_window}"
   skip_final_snapshot         = "${var.skip_final_snapshot}"
   copy_tags_to_snapshot       = "${var.copy_tags_to_snapshot}"
-  final_snapshot_identifier   = "${var.name}-archive-${element(var.parameter_group_name, count.index)}"
+  final_snapshot_identifier   = "${var.name}-archive"
 
   backup_retention_period = "${var.backup_retention_period}"
   backup_window           = "${var.backup_window}"

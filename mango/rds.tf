@@ -1,22 +1,26 @@
+# + get data Decrypt KMS encrypted database password
 data "aws_kms_secret" "db" {
   secret {
     name    = "password"
-    payload = "${var.rds_encrypted_password}"
+    payload = "${var.rds_encrypted_password}" # passes in the KMS encrypted password
 
     context {
-      project = "${var.rds_encrypted_password_context}"
+      project = "${var.rds_encrypted_password_context}" # this bound the context
     }
   }
 }
 
+# + get module RDS database instances, security etc.
 module "db" {
   source = "../rds"
 
+  # passes along the Git branches
   branches = "${var.branches}"
 
-  name    = "${var.cluster_name}"
+  name    = "${var.cluster_name}-mango"
   db_name = "${var.rds_db_name}"
 
+  # VPC
   vpc_id                    = "${var.vpc_id}"
   vpc_cidr_block            = "${var.vpc_cidr}"
   vpc_cidr_private_subnets  = "${var.vpc_cidr_private_subnets}"
@@ -37,7 +41,7 @@ module "db" {
 
   # kms_key_id        = "arm:aws:kms:<region>:<accound id>:key/<kms key id>"
   username               = "${var.rds_username}"
-  password               = "${var.rds_encrypted_password != "" ? var.rds_encrypted_password : var.rds_password}"
+  password               = "${var.rds_encrypted_password != "" ? data.aws_kms_secret.db.password : var.rds_password}"
   port                   = "${var.rds_port}"
   vpc_security_group_ids = ["${var.rds_vpc_security_group_ids}"]
   maintenance_window     = "${var.rds_maintenance_window}"
