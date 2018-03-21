@@ -31,6 +31,21 @@ variable "vpc_cidr" {
   description = "VPC cidr port to allow traffic from and to"
 }
 
+variable "vpc_cidr_private_subnets" {
+  description = "Cidr blocks for the private subnets to allow traffic from and to"
+  type        = "list"
+}
+
+variable "vpc_cidr_database_subnets" {
+  description = "Cidr blocks for the database subnets to allow traffic from and to"
+  type        = "list"
+}
+
+variable "vpc_cidr_vpn_subnets" {
+  description = "Cidr blocks for the database subnets to allow traffic from and to"
+  type        = "list"
+}
+
 variable "public_subnet_ids" {
   type        = "list"
   description = "VPC public subnets"

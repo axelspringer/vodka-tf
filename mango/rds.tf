@@ -8,9 +8,9 @@ module "db" {
 
   vpc_id                    = "${var.vpc_id}"
   vpc_cidr_block            = "${var.vpc_cidr}"
-  vpc_cidr_private_subnets  = "${var.private_subnet_ids}"
-  vpc_cidr_database_subnets = "${var.database_subnet_ids}"
-  vpc_cidr_vpn_subnets      = "${var.vpn_subnet_ids}"      # should be remote state
+  vpc_cidr_private_subnets  = "${var.vpc_cidr_private_subnets}"
+  vpc_cidr_database_subnets = "${var.vpc_cidr_database_subnets}"
+  vpc_cidr_vpn_subnets      = "${var.vpc_cidr_vpn_subnets}"      # should be remote state
 
   iam_database_authentication_enabled = "${var.rds_iam_database_authentication_enabled}"
   iam_user                            = "${var.rds_iam_user}"
