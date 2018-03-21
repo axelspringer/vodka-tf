@@ -64,6 +64,7 @@ variable "database_subnet_ids" {
 variable "vpn_subnet_ids" {
   description = "Cidr blocks for the database subnets to allow traffic from and to"
   type        = "list"
+  default     = []
 }
 
 variable "github_org" {
