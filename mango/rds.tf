@@ -1,3 +1,14 @@
+data "aws_kms_secret" "db" {
+  secret {
+    name    = "password"
+    payload = "${var.rds_encrypted_password}"
+
+    context {
+      project = "${var.project}"
+    }
+  }
+}
+
 module "db" {
   source = "../rds"
 
@@ -26,7 +37,7 @@ module "db" {
 
   # kms_key_id        = "arm:aws:kms:<region>:<accound id>:key/<kms key id>"
   username               = "${var.rds_username}"
-  password               = "${var.rds_password}"
+  password               = "${var.rds_encrypted_password != "" ? var.rds_encrypted_password : var.rds_password}"
   port                   = "${var.rds_port}"
   vpc_security_group_ids = ["${var.rds_vpc_security_group_ids}"]
   maintenance_window     = "${var.rds_maintenance_window}"
