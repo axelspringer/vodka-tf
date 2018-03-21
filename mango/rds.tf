@@ -4,7 +4,7 @@ data "aws_kms_secret" "db" {
     payload = "${var.rds_encrypted_password}"
 
     context {
-      project = "${var.project}"
+      project = "${var.rds_encrypted_password_context}"
     }
   }
 }

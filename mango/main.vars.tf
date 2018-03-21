@@ -12,10 +12,6 @@ variable "branches" {
   ]
 }
 
-variable "project" {
-  description = "Project id that is used for Mango"
-}
-
 variable "route53_zone" {
   default     = "tortuga.services"
   description = "Route 53 Zone to use for external use"
@@ -265,10 +261,16 @@ variable "rds_username" {
 
 variable "rds_password" {
   description = "Password for the master DB user. Note that this may show up in logs, and it will be stored in the state file"
+  default     = ""
 }
 
 variable "rds_encrypted_password" {
   description = "KMS encrypted password for the user"
+  default     = ""
+}
+
+variable "rds_encrypted_password_context" {
+  description = "Project id that is used for Mango"
   default     = ""
 }
 
