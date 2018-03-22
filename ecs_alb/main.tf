@@ -86,3 +86,23 @@ resource "aws_security_group_rule" "alb_to_ecs" {
   source_security_group_id = "${aws_security_group.alb.id}"
   security_group_id        = "${var.instance_security_group_id}"
 }
+
+resource "aws_security_group_rule" "alb_to_http" {
+  count                    = "${var.enable_privileged}"
+  type                     = "ingress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "TCP"
+  source_security_group_id = "${aws_security_group.alb.id}"
+  security_group_id        = "${var.instance_security_group_id}"
+}
+
+resource "aws_security_group_rule" "alb_to_https" {
+  count                    = "${var.enable_privileged}"
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "TCP"
+  source_security_group_id = "${aws_security_group.alb.id}"
+  security_group_id        = "${var.instance_security_group_id}"
+}
