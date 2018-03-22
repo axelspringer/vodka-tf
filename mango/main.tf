@@ -17,6 +17,7 @@ data "aws_ecs_task_definition" "wp" {
 }
 
 data "template_file" "gw" {
+  count    = "${length(var.branches)}"
   template = "${file("${path.module}/definitions/gw.json.tpl")}"
 
   vars {
@@ -26,6 +27,10 @@ data "template_file" "gw" {
     mem     = "${var.memory}"
     image   = "${var._image}"
     port    = "${var._container_port}"
+
+    log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
+    log_region = "${data.aws_region.current.name}"
+    log_prefix = "gw"
   }
 }
 
@@ -39,6 +44,10 @@ data "template_file" "ssr" {
     mem_res = "${var.memory_reservation}"
     image   = "${var._image}"
     port    = "${var._container_port}"
+
+    log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
+    log_region = "${data.aws_region.current.name}"
+    log_prefix = "gw"
   }
 }
 
@@ -52,6 +61,10 @@ data "template_file" "wp" {
     mem_res = "${var.memory_reservation}"
     image   = "${var._image}"
     port    = "${var._container_port}"
+
+    log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
+    log_region = "${data.aws_region.current.name}"
+    log_prefix = "gw"
   }
 }
 
@@ -60,7 +73,7 @@ resource "aws_ecs_task_definition" "gw" {
 
   family = "mango-gw-${element(var.branches, count.index)}"
 
-  container_definitions = "${data.template_file.gw.rendered}"
+  container_definitions = "${element(data.template_file.gw.*.rendered, count.index)}"
   network_mode          = "bridge"
 
   task_role_arn = "${aws_iam_role.task.arn}"
@@ -76,7 +89,7 @@ resource "aws_ecs_task_definition" "ssr" {
 
   family = "mango-ssr-${element(var.branches, count.index)}"
 
-  container_definitions = "${data.template_file.ssr.rendered}"
+  container_definitions = "${element(data.template_file.ssr.*.rendered, count.index)}"
   network_mode          = "bridge"
 
   task_role_arn = "${aws_iam_role.task.arn}"
@@ -92,7 +105,7 @@ resource "aws_ecs_task_definition" "wp" {
 
   family = "mango-wp-${element(var.branches, count.index)}"
 
-  container_definitions = "${data.template_file.wp.rendered}"
+  container_definitions = "${element(data.template_file.wp.*.rendered, count.index)}"
   network_mode          = "bridge"
 
   task_role_arn = "${aws_iam_role.task.arn}"
