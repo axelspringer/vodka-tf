@@ -347,6 +347,10 @@ variable "rds_backup_window" {
 }
 
 # ! private
+variable "_task_log_retention_in_days" {
+  default = 7
+}
+
 variable "_image" {
   default = "axelspringer/nginx"
 }
