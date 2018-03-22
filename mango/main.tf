@@ -47,7 +47,7 @@ data "template_file" "ssr" {
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
-    log_prefix = "gw"
+    log_prefix = "ssr"
   }
 }
 
@@ -64,7 +64,7 @@ data "template_file" "wp" {
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
-    log_prefix = "gw"
+    log_prefix = "wp"
   }
 }
 
