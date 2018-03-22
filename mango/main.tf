@@ -20,11 +20,12 @@ data "template_file" "gw" {
   template = "${file("${path.module}/definitions/gw.json.tpl")}"
 
   vars {
-    name  = "mango_gw"
-    cpu   = "${var.cpu}"
-    mem   = "${var.memory}"
-    image = "${var._image}"
-    port  = "${var._container_port}"
+    name    = "mango_gw"
+    cpu     = "${var.cpu}"
+    mem_res = "${var.memory_reservation}"
+    mem     = "${var.memory}"
+    image   = "${var._image}"
+    port    = "${var._container_port}"
   }
 }
 
@@ -32,11 +33,12 @@ data "template_file" "ssr" {
   template = "${file("${path.module}/definitions/ssr.json.tpl")}"
 
   vars {
-    name  = "mango_ssr"
-    cpu   = "${var.cpu}"
-    mem   = "${var.memory}"
-    image = "${var._image}"
-    port  = "${var._container_port}"
+    name    = "mango_ssr"
+    cpu     = "${var.cpu}"
+    mem     = "${var.memory}"
+    mem_res = "${var.memory_reservation}"
+    image   = "${var._image}"
+    port    = "${var._container_port}"
   }
 }
 
@@ -44,11 +46,12 @@ data "template_file" "wp" {
   template = "${file("${path.module}/definitions/wp.json.tpl")}"
 
   vars {
-    name  = "mango_wp"
-    cpu   = "${var.cpu}"
-    mem   = "${var.memory}"
-    image = "${var._image}"
-    port  = "${var._container_port}"
+    name    = "mango_wp"
+    cpu     = "${var.cpu}"
+    mem     = "${var.memory}"
+    mem_res = "${var.memory_reservation}"
+    image   = "${var._image}"
+    port    = "${var._container_port}"
   }
 }
 
