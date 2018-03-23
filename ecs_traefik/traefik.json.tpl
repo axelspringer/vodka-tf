@@ -7,7 +7,7 @@
     "memoryReservation": ${mem_res},
     "command": [
       "--defaultentrypoints=http",
-      "--entrypoints='Name:http Address::80'",
+      "--entrypoints='Name:http Address::80 '",
       "--ping",
       "--ping.entrypoint=http"
     ],
