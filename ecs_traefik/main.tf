@@ -11,6 +11,7 @@ module "alb" {
   branches          = "${var.branches}"
   name              = "${var.cluster_name}-t"
   health_check_path = "/ping"
+  enable_privileged = true
 
   vpc_id                     = "${var.vpc_id}"
   public_subnet_ids          = ["${var.vpc_public_subnet_ids}"]
