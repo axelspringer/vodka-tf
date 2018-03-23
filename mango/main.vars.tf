@@ -150,7 +150,7 @@ variable "placement_constraint_type" {
 }
 
 variable "placement_constraint_expression" {
-  default     = "attribute:ecs.availability-zone in [eu-west-1c, eu-west-1a]"
+  default     = "attribute:ecs.availability-zone in [eu-west-1b, eu-west-1c, eu-west-1a]"
   description = "luster Query Language expression to apply to the constraint. Does not need to be specified for the distinctInstance type."
 }
 
