@@ -6,8 +6,16 @@
     "memory": ${mem},
     "memoryReservation": ${mem_res},
     "command": [
+      "--ecs",
+      "--ecs.trace",
+      "--ecs.exposedbydefault=false",
+      "--ecs.region=${cluster_region}",
+      "--ecs.clusters=${cluster_name}",
       "--defaultentrypoints=http",
       "--entrypoints=Name:http Address::80",
+      "--entrypoints=Name:api Address::8080",
+      "--api",
+      "--api.entrypoint=8080",
       "--ping",
       "--ping.entrypoint=http"
     ],

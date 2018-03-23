@@ -12,6 +12,7 @@ module "alb" {
   name              = "${var.cluster_name}-t"
   health_check_path = "/ping"
   enable_privileged = true
+  enable_dashboard  = "${var.enable_dashboard}"
 
   vpc_id                     = "${var.vpc_id}"
   public_subnet_ids          = ["${var.vpc_public_subnet_ids}"]
@@ -47,7 +48,7 @@ resource "aws_ecs_service" "traefik" {
 resource "aws_ecs_task_definition" "traefik" {
   count = "${length(var.branches)}"
 
-  family = "${var.cluster_name}-traefik-${element(var.branches, count.index)}"
+  family = "${var.cluster_name}-${element(var.branches, count.index)}-traefik"
 
   container_definitions = "${element(data.template_file.traefik.*.rendered, count.index)}"
   network_mode          = "bridge"
@@ -68,13 +69,15 @@ data "template_file" "traefik" {
   template = "${file("${path.module}/traefik.json.tpl")}"
 
   vars {
-    name       = "traefik"
-    cpu        = "${var.cpu}"
-    mem_res    = "${var.memory_reservation}"
-    mem        = "${var.memory}"
-    port_web   = "${var.port_web}"
-    port_http  = "${var.port_http}"
-    port_https = "${var.port_https}"
+    name           = "traefik"
+    cpu            = "${var.cpu}"
+    mem_res        = "${var.memory_reservation}"
+    mem            = "${var.memory}"
+    port_web       = "${var.port_web}"
+    port_http      = "${var.port_http}"
+    port_https     = "${var.port_https}"
+    cluster_name   = "${var.cluster_name}"
+    cluster_region = "${data.aws_region.current.name}"
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/traefik"
     log_region = "${data.aws_region.current.name}"
