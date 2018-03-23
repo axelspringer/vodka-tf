@@ -82,6 +82,7 @@ data "template_file" "traefik" {
     cpu            = "${var.cpu}"
     mem_res        = "${var.memory_reservation}"
     mem            = "${var.memory}"
+    port_web       = "${var.port_web}"
     port_http      = "${var.port_http}"
     port_https     = "${var.port_https}"
     cluster_name   = "${var.cluster_name}-${element(var.branches, count.index)}"
