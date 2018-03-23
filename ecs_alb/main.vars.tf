@@ -43,10 +43,6 @@ variable "_enable_http2" {
   default = true
 }
 
-variable "_ip_address_type" {
-  default = "dualstack"
-}
-
 variable "tags" {
   type    = "map"
   default = {}

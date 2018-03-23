@@ -18,8 +18,6 @@ resource "aws_alb" "alb" {
   subnets         = ["${var.public_subnet_ids}"]
   security_groups = ["${aws_security_group.alb.id}"]
   enable_http2    = "${var._enable_http2}"
-
-  ip_address_type = "${var._ip_address_type}"
 }
 
 resource "aws_alb_listener" "http" {
