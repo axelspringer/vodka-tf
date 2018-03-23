@@ -34,7 +34,7 @@
       "protocol": "tcp"
     },
     {
-      "hostPort": ${port_}
+      "hostPort": ${port_web}
       "containerPort": ${port_web},
       "protocol": "tcp"
     }]

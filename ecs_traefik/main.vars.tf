@@ -31,6 +31,10 @@ variable "vpc_cidr_vpn_subnet" {
   description = "List of VPN Cidr in the VPC"
 }
 
+variable "route53_zone" {
+  description = "The Route 53 zone to use for the wildcard Traefik resolution"
+}
+
 variable "instance_security_group_id" {
   description = "The security group of the ECS container instances"
 }
@@ -105,4 +109,8 @@ variable "_task_log_retention_in_days" {
 
 variable "_image" {
   default = "traefik:1.5"
+}
+
+variable "_evaluate_target_health" {
+  default = true
 }
