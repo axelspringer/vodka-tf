@@ -15,6 +15,8 @@
       "--entrypoints=Name:http Address::80",
       "--entrypoints=Name:dashboard Address::8080",
       "--api",
+      "--api.dashboard",
+      "--api.statistics",
       "--api.entrypoint=dashboard",
       "--ping",
       "--ping.entrypoint=http"
