@@ -57,6 +57,7 @@ resource "aws_ecs_task_definition" "traefik" {
 data "aws_ecs_task_definition" "traefik" {
   count           = "${length(var.branches)}"
   task_definition = "${element(aws_ecs_task_definition.traefik.*.family, count.index)}"
+  depends_on      = ["aws_ecs_task_definition.traefik"]
 }
 
 # + get data AWS ECS task definition template of Traefik
