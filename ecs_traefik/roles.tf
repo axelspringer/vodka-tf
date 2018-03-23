@@ -60,7 +60,9 @@ data "aws_iam_policy_document" "task_policy" {
       "ec2:DescribeInstances",
     ]
 
-    resources = ["${var.cluster_arns}"]
+    resources = [
+      "*",
+    ]
   }
 
   statement {
