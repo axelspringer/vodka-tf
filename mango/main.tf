@@ -28,7 +28,7 @@ data "template_file" "gw" {
     image   = "${var._image}"
     port    = "${var._container_port}"
 
-    route53_zone = "${join("", list("gw", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
+    route53_zone = "${join(".", list("gw", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
@@ -47,7 +47,7 @@ data "template_file" "ssr" {
     image   = "${var._image}"
     port    = "${var._container_port}"
 
-    route53_zone = "${join("", list("ssr", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
+    route53_zone = "${join(".", list("ssr", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
@@ -66,7 +66,7 @@ data "template_file" "wp" {
     image   = "${var._image}"
     port    = "${var._container_port}"
 
-    route53_zone = "${join("", list("wp", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
+    route53_zone = "${join(".", list("wp", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
