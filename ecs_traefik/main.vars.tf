@@ -40,7 +40,7 @@ variable "route53_wildcard_zone" {
 }
 
 variable "enable_stickiness" {
-  default     = false
+  default     = true
   description = "Enable sticky sessions on the ALB"
 }
 
