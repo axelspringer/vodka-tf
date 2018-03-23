@@ -8,8 +8,9 @@ data "aws_caller_identity" "current" {}
 module "alb" {
   source = "../ecs_alb"
 
-  branches = "${var.branches}"
-  name     = "${var.cluster_name}-t"
+  branches          = "${var.branches}"
+  name              = "${var.cluster_name}-t"
+  health_check_path = "/ping"
 
   vpc_id                     = "${var.vpc_id}"
   public_subnet_ids          = ["${var.vpc_public_subnet_ids}"]
@@ -19,7 +20,7 @@ module "alb" {
 # + get res AWS ECS service for Traefik
 resource "aws_ecs_service" "traefik" {
   count           = "${length(var.cluster_ids)}"
-  name            = "traefik-${element(var.branches, count.index)}"
+  name            = "traefik"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
   task_definition = "${element(aws_ecs_task_definition.traefik.*.family, count.index)}:${max("${element(aws_ecs_task_definition.traefik.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.traefik.*.revision, count.index)}")}"

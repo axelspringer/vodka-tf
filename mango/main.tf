@@ -71,7 +71,7 @@ data "template_file" "wp" {
 resource "aws_ecs_task_definition" "gw" {
   count = "${length(var.branches)}"
 
-  family = "mango-gw-${element(var.branches, count.index)}"
+  family = "${var.cluster_name}-mango-gw-${element(var.branches, count.index)}"
 
   container_definitions = "${element(data.template_file.gw.*.rendered, count.index)}"
   network_mode          = "bridge"
@@ -87,7 +87,7 @@ resource "aws_ecs_task_definition" "gw" {
 resource "aws_ecs_task_definition" "ssr" {
   count = "${length(var.branches)}"
 
-  family = "mango-ssr-${element(var.branches, count.index)}"
+  family = "${var.cluster_name}-mango-ssr-${element(var.branches, count.index)}"
 
   container_definitions = "${element(data.template_file.ssr.*.rendered, count.index)}"
   network_mode          = "bridge"
@@ -103,7 +103,7 @@ resource "aws_ecs_task_definition" "ssr" {
 resource "aws_ecs_task_definition" "wp" {
   count = "${length(var.branches)}"
 
-  family = "mango-wp-${element(var.branches, count.index)}"
+  family = "${var.cluster_name}-mango-wp-${element(var.branches, count.index)}"
 
   container_definitions = "${element(data.template_file.wp.*.rendered, count.index)}"
   network_mode          = "bridge"
