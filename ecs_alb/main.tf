@@ -5,7 +5,6 @@ resource "aws_alb_target_group" "default" {
   protocol             = "HTTP"
   vpc_id               = "${var.vpc_id}"
   deregistration_delay = "${var.deregistration_delay}"
-  ip_address_type      = "${var._ip_address_type}"
 
   health_check {
     path     = "${var.health_check_path}"
@@ -19,6 +18,8 @@ resource "aws_alb" "alb" {
   subnets         = ["${var.public_subnet_ids}"]
   security_groups = ["${aws_security_group.alb.id}"]
   enable_http2    = "${var._enable_http2}"
+
+  ip_address_type = "${var._ip_address_type}"
 }
 
 resource "aws_alb_listener" "http" {
