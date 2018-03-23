@@ -7,7 +7,7 @@ data "aws_route53_zone" "default" {
 resource "aws_route53_record" "default" {
   count   = "${length(var.branches)}"
   zone_id = "${data.aws_route53_zone.default.name}"
-  name    = "${join(".", ["*", element(var.branches, count.index), var.cluster_name, data.aws_route53_zone.default.name ])}"
+  name    = "${join(".", list("*", element(var.branches, count.index), var.cluster_name, data.aws_route53_zone.default.name ))}"
   type    = "A"
 
   alias {
