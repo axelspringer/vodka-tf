@@ -6,7 +6,7 @@ data "aws_route53_zone" "default" {
 # + get res Route 53 of the wildcard domain
 resource "aws_route53_record" "default" {
   count   = "${length(var.branches)}"
-  zone_id = "${data.aws_route53_zone.default.name}"
+  zone_id = "${data.aws_route53_zone.default.zone_id}"
   name    = "${join(".", list("*", element(var.branches, count.index), var.cluster_name, data.aws_route53_zone.default.name ))}"
   type    = "A"
 
