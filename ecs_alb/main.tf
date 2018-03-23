@@ -32,6 +32,19 @@ resource "aws_alb_listener" "http" {
   }
 }
 
+resource "aws_alb_listener" "dashboard_http" {
+  count             = "${var.enable_dashboard}"
+  count             = "${length(var.branches)}"
+  load_balancer_arn = "${element(aws_alb.alb.*.id, count.index)}"
+  port              = "8080"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = "${element(aws_alb_target_group.default.*.arn, count.index)}"
+    type             = "forward"
+  }
+}
+
 # resource "aws_alb_listener" "https" {
 #   count             = "${length(var.branches)}"
 #   load_balancer_arn = "${element(aws_alb.alb.*.id, count.index)}"
