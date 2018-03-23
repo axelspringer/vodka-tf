@@ -39,6 +39,11 @@ variable "route53_wildcard_zone" {
   description = "The Route 53 wildcard domain to be used"
 }
 
+variable "enable_stickiness" {
+  default     = false
+  description = "Enable sticky sessions on the ALB"
+}
+
 variable "instance_security_group_id" {
   description = "The security group of the ECS container instances"
 }

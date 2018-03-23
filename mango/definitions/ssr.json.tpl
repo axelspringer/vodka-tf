@@ -16,6 +16,12 @@
     "portMappings": [{
       "containerPort": ${port},
       "protocol": "tcp"
-    }]
+    }],
+    "dockerLabels": {
+      "traefik.frontend.rule": "${route53_zone}",
+      "traefik.enable": "true",
+      "traefik.backend.loadbalancer.stickiness": "true",
+      "traefik.frontend.entryPoints": "http"
+    }
   }
 ]

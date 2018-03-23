@@ -13,7 +13,6 @@ variable "branches" {
 }
 
 variable "route53_zone" {
-  default     = "tortuga.services"
   description = "Route 53 Zone to use for external use"
 }
 

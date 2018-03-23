@@ -28,6 +28,8 @@ data "template_file" "gw" {
     image   = "${var._image}"
     port    = "${var._container_port}"
 
+    route53_zone = "${join("", list("gw", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
+
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
     log_prefix = "gw"
@@ -45,6 +47,8 @@ data "template_file" "ssr" {
     image   = "${var._image}"
     port    = "${var._container_port}"
 
+    route53_zone = "${join("", list("ssr", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
+
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
     log_prefix = "ssr"
@@ -61,6 +65,8 @@ data "template_file" "wp" {
     mem_res = "${var.memory_reservation}"
     image   = "${var._image}"
     port    = "${var._container_port}"
+
+    route53_zone = "${join("", list("wp", "${var.cluster_name}-${element(var.branches, count.index)}", var.route53_zone))}"
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
@@ -118,7 +124,7 @@ resource "aws_ecs_task_definition" "wp" {
 
 resource "aws_ecs_service" "ssr" {
   count           = "${length(var.cluster_ids)}"
-  name            = "mango-ssr-${element(var.branches, count.index)}"
+  name            = "mango-ssr"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
   task_definition = "${element(aws_ecs_task_definition.ssr.*.family, count.index)}:${max("${element(aws_ecs_task_definition.ssr.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.ssr.*.revision, count.index)}")}"
@@ -129,21 +135,15 @@ resource "aws_ecs_service" "ssr" {
     type  = "${var.placement_strategy_type}"
     field = "${var.placement_strategy_field}"
   }
-  load_balancer {
-    target_group_arn = "${element(module.alb_ssr.default_alb_target_groups, count.index)}"
-    container_name   = "mango_ssr"
-    container_port   = "${var._container_port}"
-  }
   placement_constraints {
     type       = "${var.placement_constraint_type}"
     expression = "${var.placement_constraint_expression}"
   }
-  depends_on = ["module.alb_ssr"]
 }
 
 resource "aws_ecs_service" "wp" {
   count           = "${length(var.cluster_ids)}"
-  name            = "mango-wp-${element(var.branches, count.index)}"
+  name            = "mango-wp"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
   task_definition = "${element(aws_ecs_task_definition.wp.*.family, count.index)}:${max("${element(aws_ecs_task_definition.wp.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.wp.*.revision, count.index)}")}"
@@ -154,21 +154,15 @@ resource "aws_ecs_service" "wp" {
     type  = "${var.placement_strategy_type}"
     field = "${var.placement_strategy_field}"
   }
-  load_balancer {
-    target_group_arn = "${element(module.alb_wp.default_alb_target_groups, count.index)}"
-    container_name   = "mango_wp"
-    container_port   = "${var._container_port}"
-  }
   placement_constraints {
     type       = "${var.placement_constraint_type}"
     expression = "${var.placement_constraint_expression}"
   }
-  depends_on = ["module.alb_wp"]
 }
 
 resource "aws_ecs_service" "gateway" {
   count           = "${length(var.cluster_ids)}"
-  name            = "mango-gw-${element(var.branches, count.index)}"
+  name            = "mango-gw"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
   task_definition = "${element(aws_ecs_task_definition.gw.*.family, count.index)}:${max("${element(aws_ecs_task_definition.gw.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.gw.*.revision, count.index)}")}"
@@ -179,14 +173,8 @@ resource "aws_ecs_service" "gateway" {
     type  = "${var.placement_strategy_type}"
     field = "${var.placement_strategy_field}"
   }
-  load_balancer {
-    target_group_arn = "${element(module.alb_gw.default_alb_target_groups, count.index)}"
-    container_name   = "mango_gw"
-    container_port   = "${var._container_port}"
-  }
   placement_constraints {
     type       = "${var.placement_constraint_type}"
     expression = "${var.placement_constraint_expression}"
   }
-  depends_on = ["module.alb_gw"]
 }
