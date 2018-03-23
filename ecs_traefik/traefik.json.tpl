@@ -5,6 +5,12 @@
     "cpu": ${cpu},
     "memory": ${mem},
     "memoryReservation": ${mem_res},
+    "command": [
+      "--defaultentrypoints=http",
+      "--entrypoints='Name:http Address::80'",
+      "--ping",
+      "--ping.entrypoint=http"
+    ],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
