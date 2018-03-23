@@ -14,6 +14,7 @@
       "--ecs.exposedbydefault=false",
       "--ecs.region=${cluster_region}",
       "--ecs.clusters=${cluster_name}",
+      "--ecs.watch",
       "--api",
       "--api.dashboard",
       "--api.statistics",
@@ -31,7 +32,7 @@
     "portMappings": [
     {
       "containerPort": ${port_http},
-      "protocol": "tcp"
+      "hostPort": ${port_http}
     },
     {
       "hostPort": ${port_web},

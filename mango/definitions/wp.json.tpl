@@ -18,7 +18,7 @@
       "protocol": "tcp"
     }],
     "dockerLabels": {
-      "traefik.frontend.rule": "${route53_zone}",
+      "traefik.frontend.rule": "Host:${route53_zone}",
       "traefik.enable": "true",
       "traefik.frontend.entryPoints": "http"
     }

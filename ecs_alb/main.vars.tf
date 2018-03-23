@@ -9,6 +9,16 @@ variable "branches" {
   type = "list"
 }
 
+variable "certificate_arns" {
+  type        = "list"
+  description = "The certificate ARN for the Albs"
+}
+
+variable "enable_traefik" {
+  default     = false
+  description = "This enables Traefik for the security roles and target groups"
+}
+
 variable "cluster" {
   default     = "default"
   description = "The cluster to load balance"

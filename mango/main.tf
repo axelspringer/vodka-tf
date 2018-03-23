@@ -37,6 +37,7 @@ data "template_file" "gw" {
 }
 
 data "template_file" "ssr" {
+  count    = "${length(var.branches)}"
   template = "${file("${path.module}/definitions/ssr.json.tpl")}"
 
   vars {
@@ -56,6 +57,7 @@ data "template_file" "ssr" {
 }
 
 data "template_file" "wp" {
+  count    = "${length(var.branches)}"
   template = "${file("${path.module}/definitions/wp.json.tpl")}"
 
   vars {
@@ -64,7 +66,7 @@ data "template_file" "wp" {
     mem     = "${var.memory}"
     mem_res = "${var.memory_reservation}"
     image   = "${var._image}"
-    port    = "${var._container_port}"
+    port    = "80"
 
     route53_zone = "${join(".", list("wp", "${element(var.branches, count.index)}", var.route53_zone))}"
 
