@@ -38,6 +38,16 @@ variable "allow_cidr_block" {
   description = "Specify cird block that is allowd to acces the LoadBalancer"
 }
 
+variable "enable_stickiness" {
+  default     = false
+  description = "Enable stickiness for the ALB"
+}
+
+variable "stickiness_cookie_duration" {
+  default     = 300
+  description = "Duration of the stickiness cookie"
+}
+
 # ! private
 variable "_enable_http2" {
   default = true

@@ -10,6 +10,12 @@ resource "aws_alb_target_group" "default" {
     path     = "${var.health_check_path}"
     protocol = "HTTP"
   }
+
+  stickiness {
+    type            = "lb_cookie"
+    cookie_duration = "${var.stickiness_cookie_duration}"
+    enabled         = "${var.enable_stickiness}"
+  }
 }
 
 resource "aws_alb" "alb" {
