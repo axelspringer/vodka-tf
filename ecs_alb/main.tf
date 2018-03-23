@@ -5,6 +5,7 @@ resource "aws_alb_target_group" "default" {
   protocol             = "HTTP"
   vpc_id               = "${var.vpc_id}"
   deregistration_delay = "${var.deregistration_delay}"
+  ip_address_type      = "${var._ip_address_type}"
 
   health_check {
     path     = "${var.health_check_path}"

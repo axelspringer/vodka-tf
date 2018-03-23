@@ -35,6 +35,10 @@ variable "route53_zone" {
   description = "The Route 53 zone to use for the wildcard Traefik resolution"
 }
 
+variable "route53_wildcard_zone" {
+  description = "The Route 53 wildcard domain to be used"
+}
+
 variable "instance_security_group_id" {
   description = "The security group of the ECS container instances"
 }

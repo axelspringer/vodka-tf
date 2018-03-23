@@ -38,8 +38,13 @@ variable "allow_cidr_block" {
   description = "Specify cird block that is allowd to acces the LoadBalancer"
 }
 
+# ! private
 variable "_enable_http2" {
   default = true
+}
+
+variable "_ip_address_type" {
+  default = "dualstack"
 }
 
 variable "tags" {
