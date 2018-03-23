@@ -17,11 +17,6 @@ variable "size" {
   description = "The number of instances of the task definition to place and keep running"
 }
 
-variable "enable_dashboard" {
-  default     = true
-  description = "Enabling dashboard for Traefik"
-}
-
 variable "vpc_id" {
   description = "The VPC that the cluster is running in"
 }

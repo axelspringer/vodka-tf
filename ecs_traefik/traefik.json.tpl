@@ -13,11 +13,10 @@
       "--ecs.clusters=${cluster_name}",
       "--defaultentrypoints=http",
       "--entrypoints=Name:http Address::80",
-      "--entrypoints=Name:dashboard Address::8080",
       "--api",
       "--api.dashboard",
       "--api.statistics",
-      "--api.entrypoint=dashboard",
+      "--api.entrypoint=http",
       "--ping",
       "--ping.entrypoint=http"
     ],
@@ -28,17 +27,14 @@
         "awslogs-region": "${log_region}"
       }
     },
-    "portMappings": [{
-      "containerPort": ${port_web},
-      "hostPort": ${port_web}
-    },
+    "portMappings": [
     {
       "containerPort": ${port_http},
-      "hostPort": ${port_http}
+      "protocol": "tcp"
     },
     {
       "containerPort": ${port_https},
-      "hostPort": ${port_https}
+      "protocol": "tcp"
     }]
   }
 ]

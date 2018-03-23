@@ -9,16 +9,6 @@ variable "branches" {
   type = "list"
 }
 
-variable "enable_privileged" {
-  description = "Enable privileged ports to be routed"
-  default     = false
-}
-
-variable "enable_dashboard" {
-  description = "Enable dashboard ports to be routed"
-  default     = false
-}
-
 variable "cluster" {
   default     = "default"
   description = "The cluster to load balance"

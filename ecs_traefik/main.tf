@@ -11,8 +11,6 @@ module "alb" {
   branches          = "${var.branches}"
   name              = "${var.cluster_name}-t"
   health_check_path = "/ping"
-  enable_privileged = true
-  enable_dashboard  = "${var.enable_dashboard}"
 
   vpc_id                     = "${var.vpc_id}"
   public_subnet_ids          = ["${var.vpc_public_subnet_ids}"]
@@ -73,10 +71,9 @@ data "template_file" "traefik" {
     cpu            = "${var.cpu}"
     mem_res        = "${var.memory_reservation}"
     mem            = "${var.memory}"
-    port_web       = "${var.port_web}"
     port_http      = "${var.port_http}"
     port_https     = "${var.port_https}"
-    cluster_name   = "${var.cluster_name}"
+    cluster_name   = "${var.cluster_name}-${element(var.branches, count.index)}"
     cluster_region = "${data.aws_region.current.name}"
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/traefik"

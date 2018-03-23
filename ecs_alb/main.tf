@@ -32,19 +32,6 @@ resource "aws_alb_listener" "http" {
   }
 }
 
-resource "aws_alb_listener" "dashboard_http" {
-  count             = "${var.enable_dashboard}"
-  count             = "${length(var.branches)}"
-  load_balancer_arn = "${element(aws_alb.alb.*.id, count.index)}"
-  port              = "8080"
-  protocol          = "HTTP"
-
-  default_action {
-    target_group_arn = "${element(aws_alb_target_group.default.*.arn, count.index)}"
-    type             = "forward"
-  }
-}
-
 # resource "aws_alb_listener" "https" {
 #   count             = "${length(var.branches)}"
 #   load_balancer_arn = "${element(aws_alb.alb.*.id, count.index)}"
@@ -73,16 +60,6 @@ resource "aws_security_group_rule" "https_from_anywhere" {
   security_group_id = "${aws_security_group.alb.id}"
 }
 
-resource "aws_security_group_rule" "dashboard_from_anywhere" {
-  count             = "${var.enable_dashboard}"
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "TCP"
-  cidr_blocks       = ["${var.allow_cidr_block}"]
-  security_group_id = "${aws_security_group.alb.id}"
-}
-
 # resource "aws_security_group_rule" "http_from_anywhere" {
 #   type              = "ingress"
 #   from_port         = 443
@@ -105,36 +82,6 @@ resource "aws_security_group_rule" "alb_to_ecs" {
   type                     = "ingress"
   from_port                = 32768
   to_port                  = 61000
-  protocol                 = "TCP"
-  source_security_group_id = "${aws_security_group.alb.id}"
-  security_group_id        = "${var.instance_security_group_id}"
-}
-
-resource "aws_security_group_rule" "alb_to_http" {
-  count                    = "${var.enable_privileged}"
-  type                     = "ingress"
-  from_port                = 80
-  to_port                  = 80
-  protocol                 = "TCP"
-  source_security_group_id = "${aws_security_group.alb.id}"
-  security_group_id        = "${var.instance_security_group_id}"
-}
-
-resource "aws_security_group_rule" "dashboard_to_http" {
-  count                    = "${var.enable_dashboard}"
-  type                     = "ingress"
-  from_port                = 8080
-  to_port                  = 8080
-  protocol                 = "TCP"
-  source_security_group_id = "${aws_security_group.alb.id}"
-  security_group_id        = "${var.instance_security_group_id}"
-}
-
-resource "aws_security_group_rule" "alb_to_https" {
-  count                    = "${var.enable_privileged}"
-  type                     = "ingress"
-  from_port                = 443
-  to_port                  = 443
   protocol                 = "TCP"
   source_security_group_id = "${aws_security_group.alb.id}"
   security_group_id        = "${var.instance_security_group_id}"
