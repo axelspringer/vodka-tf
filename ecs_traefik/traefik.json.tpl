@@ -13,9 +13,9 @@
       "--ecs.clusters=${cluster_name}",
       "--defaultentrypoints=http",
       "--entrypoints=Name:http Address::80",
-      "--entrypoints=Name:api Address::8080",
+      "--entrypoints=Name:dashboard Address::8080",
       "--api",
-      "--api.entrypoint=8080",
+      "--api.entrypoint=dashboard",
       "--ping",
       "--ping.entrypoint=http"
     ],
