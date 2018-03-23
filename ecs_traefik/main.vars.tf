@@ -26,6 +26,11 @@ variable "vpc_public_subnet_ids" {
   description = "List of public subnet ids to place the loadbalancer in"
 }
 
+variable "vpc_cidr_vpn_subnet" {
+  type        = "list"
+  description = "List of VPN Cidr in the VPC"
+}
+
 variable "instance_security_group_id" {
   description = "The security group of the ECS container instances"
 }
@@ -72,6 +77,11 @@ variable "port_http" {
 variable "port_https" {
   default     = 443
   description = "The https port"
+}
+
+variable "enable_web" {
+  default     = true
+  description = "Enable the web interfaces of Traefik (e.g. statistics, dashboard etc)"
 }
 
 variable "placement_strategy_type" {

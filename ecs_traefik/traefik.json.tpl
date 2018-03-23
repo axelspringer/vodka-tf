@@ -6,17 +6,18 @@
     "memory": ${mem},
     "memoryReservation": ${mem_res},
     "command": [
+      "--defaultentrypoints=http",
+      "--entrypoints=Name:http Address::80",
+      "--entrypoints=Name:web Address::8080",
       "--ecs",
       "--ecs.trace",
       "--ecs.exposedbydefault=false",
       "--ecs.region=${cluster_region}",
       "--ecs.clusters=${cluster_name}",
-      "--defaultentrypoints=http",
-      "--entrypoints=Name:http Address::80",
       "--api",
       "--api.dashboard",
       "--api.statistics",
-      "--api.entrypoint=http",
+      "--api.entrypoint=web",
       "--ping",
       "--ping.entrypoint=http"
     ],
@@ -33,7 +34,8 @@
       "protocol": "tcp"
     },
     {
-      "containerPort": ${port_https},
+      "hostPort": ${port_}
+      "containerPort": ${port_web},
       "protocol": "tcp"
     }]
   }
