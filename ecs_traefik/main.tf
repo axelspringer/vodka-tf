@@ -17,8 +17,6 @@ module "alb" {
   instance_security_group_id = "${var.instance_security_group_id}"
   enable_stickiness          = true
   certificate_arns           = ["${data.aws_acm_certificate.default.*.arn}"]
-
-  enable_traefik = true
 }
 
 # + get res AWS ECS service for Traefik
