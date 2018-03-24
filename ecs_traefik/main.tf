@@ -15,8 +15,8 @@ module "alb" {
   vpc_id                     = "${var.vpc_id}"
   public_subnet_ids          = ["${var.vpc_public_subnet_ids}"]
   instance_security_group_id = "${var.instance_security_group_id}"
-  enable_stickiness          = true
   certificate_arns           = ["${data.aws_acm_certificate.default.*.arn}"]
+  enable_traefik             = true
 }
 
 # + get res AWS ECS service for Traefik
