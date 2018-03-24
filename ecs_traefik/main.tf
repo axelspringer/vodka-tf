@@ -58,17 +58,6 @@ resource "aws_ecs_task_definition" "traefik" {
   task_role_arn = "${aws_iam_role.task.arn}"
 }
 
-# + get res AWS ECS container instance security
-resource "aws_security_group_rule" "web" {
-  count             = "${var.enable_web}"
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "TCP"
-  cidr_blocks       = ["${concat(var.vpc_cidr_vpn_subnet)}"]
-  security_group_id = "${var.instance_security_group_id}"
-}
-
 # + get data AWS ECS task definition of Traefik
 data "aws_ecs_task_definition" "traefik" {
   count           = "${length(var.branches)}"
