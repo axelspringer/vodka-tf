@@ -1,5 +1,5 @@
 # + get data AWS Certificate
 data "aws_acm_certificate" "default" {
   count  = "${length(var.branches)}"
-  domain = "*.${var.route53_zone}"
+  domain = "*.${element(var.branches, count.index)}.${var.route53_wildcard_zone}"
 }
