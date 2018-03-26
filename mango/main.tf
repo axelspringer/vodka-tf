@@ -84,7 +84,7 @@ resource "aws_ecs_task_definition" "gw" {
   container_definitions = "${element(data.template_file.gw.*.rendered, count.index)}"
   network_mode          = "bridge"
 
-  task_role_arn = "${aws_iam_role.task.arn}"
+  task_role_arn = "${element(aws_iam_role.task.*.arn, count.index)}"
 
   placement_constraints {
     type       = "${var.placement_constraint_type}"
@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "ssr" {
   container_definitions = "${element(data.template_file.ssr.*.rendered, count.index)}"
   network_mode          = "bridge"
 
-  task_role_arn = "${aws_iam_role.task.arn}"
+  task_role_arn = "${element(aws_iam_role.task.*.arn, count.index)}"
 
   placement_constraints {
     type       = "${var.placement_constraint_type}"
@@ -116,7 +116,7 @@ resource "aws_ecs_task_definition" "wp" {
   container_definitions = "${element(data.template_file.wp.*.rendered, count.index)}"
   network_mode          = "bridge"
 
-  task_role_arn = "${aws_iam_role.task.arn}"
+  task_role_arn = "${element(aws_iam_role.task.*.arn, count.index)}"
 
   placement_constraints {
     type       = "${var.placement_constraint_type}"

@@ -20,6 +20,7 @@
     "dockerLabels": {
       "traefik.frontend.rule": "Host:${route53_zone}",
       "traefik.enable": "true",
+      "traefik.frontend.passHostHeader: "true",
       "traefik.frontend.entryPoints": "http"
     }
   }

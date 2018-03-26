@@ -19,6 +19,7 @@ resource "aws_iam_role" "ecr" {
 }
 
 resource "aws_iam_role" "task" {
+  count              = "${length(var.branches)}"
   name               = "${var.cluster_name}-task-mango"
   assume_role_policy = "${data.aws_iam_policy_document.task_role.json}"
 }
@@ -39,8 +40,15 @@ resource "aws_iam_role_policy_attachment" "ecr_default" {
 }
 
 resource "aws_iam_role_policy_attachment" "task" {
-  role       = "${aws_iam_role.task.name}"
+  count      = "${length(var.branches)}"
+  role       = "${element(aws_iam_role.task.*.name, count.index)}"
   policy_arn = "${aws_iam_policy.task.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "rds" {
+  count      = "${length(var.branches)}"
+  role       = "${element(aws_iam_role.task.*.name, count.index)}"
+  policy_arn = "${element(var.rds_policy_arns, count.index)}"
 }
 
 resource "aws_iam_group_policy_attachment" "default" {

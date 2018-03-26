@@ -31,3 +31,9 @@ output "db_roles_arns" {
   description = "The ARNs of DB access roles"
   value       = "${aws_iam_role.default.*.arn}"
 }
+
+# DB Policies
+output "db_policy_arns" {
+  description = "The ARNS of the DB access policies by branch"
+  value       = "${aws_iam_policy.default.*.arn}"
+}
