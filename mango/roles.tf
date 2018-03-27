@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "task" {
 resource "aws_iam_role_policy_attachment" "rds" {
   count      = "${length(var.branches)}"
   role       = "${element(aws_iam_role.task.*.name, count.index)}"
-  policy_arn = "${element(module.db.rds_policy_arns, count.index)}"
+  policy_arn = "${element(module.db.db_policy_arns, count.index)}"
 }
 
 resource "aws_iam_group_policy_attachment" "default" {
