@@ -373,3 +373,7 @@ variable "_build_privileged_mode" {
 variable "_build_timeout" {
   default = "20"
 }
+
+variable "_s3_versioning" {
+  default = true
+}
