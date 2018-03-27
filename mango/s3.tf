@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "static" {
       type = "AWS"
 
       identifiers = [
-        "${aws_iam_role.task.arn}",
+        "${element(aws_iam_role.task.*.arn, count.index)}",
       ]
     }
 
