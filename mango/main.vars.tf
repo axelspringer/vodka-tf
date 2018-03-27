@@ -66,6 +66,10 @@ variable "vpn_subnet_ids" {
   default     = []
 }
 
+variable "ecs_route53_zone_id" {
+  descripition = "ECS Zone for discovery"
+}
+
 variable "github_org" {
   description = "Name of your organization"
 }

@@ -39,6 +39,8 @@ module "db" {
   allocated_storage = "${var.rds_allocated_storage}"
   storage_encrypted = "${var.rds_storage_encrypted}"
 
+  ecs_route53_zone_id = "${var.ecs_route53_zone_id}"
+
   # kms_key_id        = "arm:aws:kms:<region>:<accound id>:key/<kms key id>"
   username               = "${var.rds_username}"
   password               = "${var.rds_encrypted_password != "" ? data.aws_kms_secret.db.password : var.rds_password}"
