@@ -5,7 +5,7 @@ resource "aws_route53_record" "discovery" {
   zone_id = "${data.aws_route53_zone.discovery.zone_id}"
   name    = "${element(var.branches, count.index)}.db.${data.aws_route53_zone.discovery.name}"
   type    = "CNAME"
-  ttl     = "0"
+  ttl     = "60"
   records = ["${element(module.instance.db_instance_hosted_zone_ids, count.index)}"]
 }
 
