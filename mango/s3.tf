@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "static" {
       ]
     }
 
-    resource = [
+    resources = [
       "arn:aws:s3:::${var.cluster_name}-mango-static-${element(var.branches, count.index)}",
       "arn:aws:s3:::${var.cluster_name}-mango-static-${element(var.branches, count.index)}/*",
     ]
