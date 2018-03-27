@@ -346,6 +346,7 @@ variable "rds_backup_window" {
 }
 
 variable "rds_policy_arns" {
+  type        = "list"
   description = "The policy ARNs for access to the databases"
 }
 

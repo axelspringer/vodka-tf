@@ -37,3 +37,9 @@ output "db_policy_arns" {
   description = "The ARNS of the DB access policies by branch"
   value       = "${aws_iam_policy.default.*.arn}"
 }
+
+# DB Hosted Zones
+output "db_instance_hosted_zone_ids" {
+  description = "The canonical hosted zone ID of the DB instance (to be used in a Route 53 Alias record)."
+  value       = "${module.instance.db_instance_hosted_zone_ids}"
+}

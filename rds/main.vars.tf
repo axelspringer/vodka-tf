@@ -41,6 +41,14 @@ variable "tags" {
   default     = {}
 }
 
+variable "enable_ecs_discovery" {
+  default = true
+}
+
+variable "ecs_route53_zone_id" {
+  description = "Route53 Zone to use for db instance CNAMES"
+}
+
 # DB Subnet Groups
 variable "family" {
   description = "The family of the DB parameter group"
