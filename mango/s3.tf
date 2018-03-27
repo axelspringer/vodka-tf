@@ -16,10 +16,6 @@ resource "aws_s3_bucket" "static" {
   count  = "${length(var.branches)}"
   bucket = "${var.cluster_name}-mango-static-${element(var.branches, count.index)}"
   acl    = "public-read"
-
-  lifecycle {
-    prevent_destroy = true # Just for safety
-  }
 }
 
 # + get res S3 Bucket Policy
