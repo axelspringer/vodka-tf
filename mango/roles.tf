@@ -20,7 +20,7 @@ resource "aws_iam_role" "ecr" {
 
 resource "aws_iam_role" "task" {
   count              = "${length(var.branches)}"
-  name               = "${var.cluster_name}-${element(var.branches, count.index)}-task-mango"
+  name               = "${var.cluster_name}-task-${element(var.branches, count.index)}-mango"
   assume_role_policy = "${data.aws_iam_policy_document.task_role.json}"
 }
 
