@@ -22,7 +22,7 @@ resource "aws_s3_bucket" "static" {
 resource "aws_s3_bucket_policy" "static" {
   count  = "${length(var.branches)}"
   bucket = "${element(aws_s3_bucket.static.*.id, count.index)}"
-  policy = "${element(data.aws_iam_policy_document.static.json, count.index)}"
+  policy = "${element(data.aws_iam_policy_document.static.*.json, count.index)}"
 }
 
 # + get res S3
