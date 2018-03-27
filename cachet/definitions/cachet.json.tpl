@@ -9,14 +9,21 @@
       "logDriver": "awslogs",
       "options": {
         "awslogs-group": "${log_group}",
-        "awslogs-region": "${log_region}",
-        "awslogs-stream-prefix": "${log_prefix}"
+        "awslogs-region": "${log_region}"
       }
     },
     "portMappings": [{
       "containerPort": ${port},
       "protocol": "tcp"
     }],
+    "essential": true,
+    "environment": [
+      "APP_KEY": "${app_key}",
+      "DB_DRIVER": "${db_driver}",
+      "DB_USERNAME": "${db_user}",
+      "DB_HOST": "${db_host}",
+      "DB_DATABASE": "${db_database}"
+    ],
     "dockerLabels": {
       "traefik.frontend.rule": "Host:${route53_zone}",
       "traefik.frontend.passHostHeader": "true",

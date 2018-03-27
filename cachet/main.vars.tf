@@ -12,6 +12,10 @@ variable "branches" {
   ]
 }
 
+variable "app_key" {
+  description = "The APP key to use (encrypted by the KMS)"
+}
+
 variable "route53_zone" {
   description = "Route 53 Zone to use for external use"
 }
@@ -318,7 +322,7 @@ variable "_task_log_retention_in_days" {
 }
 
 variable "_image" {
-  default = "axelspringer/nginx"
+  default = "cachethq/docker"
 }
 
 variable "_evaluate_target_health" {
@@ -326,5 +330,5 @@ variable "_evaluate_target_health" {
 }
 
 variable "_container_port" {
-  default = 8080
+  default = 8000
 }

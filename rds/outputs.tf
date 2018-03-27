@@ -43,3 +43,8 @@ output "db_instance_hosted_zone_ids" {
   description = "The canonical hosted zone ID of the DB instance (to be used in a Route 53 Alias record)."
   value       = "${module.instance.db_instance_hosted_zone_ids}"
 }
+
+# DB Route53 Discovery Records
+output "db_route53_discovery_fqdn" {
+  value = "${aws_route53_record.discovery.*.fqdn}"
+}
