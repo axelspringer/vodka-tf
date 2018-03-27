@@ -67,7 +67,7 @@ variable "vpn_subnet_ids" {
 }
 
 variable "ecs_route53_zone_id" {
-  descripition = "ECS Zone for discovery"
+  description = "ECS Zone for discovery"
 }
 
 variable "github_org" {
