@@ -17,6 +17,9 @@
       "containerPort": ${port},
       "protocol": "tcp"
     }],
+    "environment": [
+      "TEMPLETON_PATH": "${templeton_path}"
+    ],
     "dockerLabels": {
       "traefik.frontend.rule": "Host:${route53_zone}",
       "traefik.enable": "true",
