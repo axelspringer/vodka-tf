@@ -152,7 +152,7 @@ data "aws_iam_policy_document" "build_role" {
 }
 
 data "aws_iam_policy_document" "task_policy" {
-  count = "${var.length(var.branches)}"
+  count = "${length(var.branches)}"
 
   statement {
     sid    = "ECSTaskPolicyKMS"
