@@ -18,7 +18,7 @@
       "protocol": "tcp"
     }],
     "environment": [
-      "TEMPLETON_PATH": "${templeton_path}"
+       { "name" : "TEMPLETON_PATH", "value" : "${templeton_path}" }
     ],
     "dockerLabels": {
       "traefik.frontend.rule": "Host:${route53_zone}",
