@@ -42,7 +42,7 @@ resource "aws_iam_role_policy_attachment" "ecr_default" {
 resource "aws_iam_role_policy_attachment" "task" {
   count      = "${length(var.branches)}"
   role       = "${element(aws_iam_role.task.*.name, count.index)}"
-  policy_arn = "${aws_iam_policy.task.arn}"
+  policy_arn = "${element(aws_iam_policy.task.*.arn, count.index)}"
 }
 
 resource "aws_iam_role_policy_attachment" "rds" {
@@ -77,9 +77,10 @@ resource "aws_iam_policy" "ecr" {
 }
 
 resource "aws_iam_policy" "task" {
+  count       = "${length(data.aws_iam_policy_document.task_policy)}"
   name        = "${var.cluster_name}-task-mango"
   description = "Allow ECS task to call AWS APIs"
-  policy      = "${data.aws_iam_policy_document.task_policy.json}"
+  policy      = "${element(data.aws_iam_policy_document.task_policy.*.json, count.index)}"
 }
 
 data "aws_iam_policy_document" "task_role" {
@@ -151,6 +152,8 @@ data "aws_iam_policy_document" "build_role" {
 }
 
 data "aws_iam_policy_document" "task_policy" {
+  count = "${var.length(var.branches)}"
+
   statement {
     sid    = "ECSTaskPolicyKMS"
     effect = "Allow"
@@ -172,7 +175,7 @@ data "aws_iam_policy_document" "task_policy" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.cluster_name}-mango-*",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.cluster_name}-${element(var.branches, count.index)}/*",
     ]
   }
 }
