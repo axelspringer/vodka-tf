@@ -30,7 +30,7 @@ data "template_file" "gw" {
 
     route53_zone = "${join(".", list("gw", "${element(var.branches, count.index)}", var.route53_zone))}"
 
-    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}-gw"
+    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}/mango/gw"
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/mango"
     log_region = "${data.aws_region.current.name}"
@@ -50,7 +50,7 @@ data "template_file" "ssr" {
     image   = "${var._image}"
     port    = "${var._container_port}"
 
-    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}-ssr"
+    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}/mango/ssr"
 
     route53_zone = "${join(".", list("ssr", "${element(var.branches, count.index)}", var.route53_zone))}"
 
@@ -72,7 +72,7 @@ data "template_file" "wp" {
     image   = "${var._image}"
     port    = "80"
 
-    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}-wp"
+    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}/mango/wp"
 
     route53_zone = "${join(".", list("wp", "${element(var.branches, count.index)}", var.route53_zone))}"
 
