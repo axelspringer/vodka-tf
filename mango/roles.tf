@@ -77,7 +77,7 @@ resource "aws_iam_policy" "ecr" {
 }
 
 resource "aws_iam_policy" "task" {
-  count       = "${length(data.aws_iam_policy_document.task_policy)}"
+  count       = "${length(data.aws_iam_policy_document.task_policy.*.json)}"
   name        = "${var.cluster_name}-task-mango"
   description = "Allow ECS task to call AWS APIs"
   policy      = "${element(data.aws_iam_policy_document.task_policy.*.json, count.index)}"
