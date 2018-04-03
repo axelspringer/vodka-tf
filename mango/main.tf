@@ -25,7 +25,7 @@ data "template_file" "gw" {
     cpu     = "${var.cpu}"
     mem_res = "${var.memory_reservation}"
     mem     = "${var.memory}"
-    image   = "axelspringer/mango-api"    # use generic mango-api image
+    image   = "${var._image}"
     port    = "${var._container_port}"
 
     route53_zone = "${join(".", list("gw", "${element(var.branches, count.index)}", var.route53_zone))}"
