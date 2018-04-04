@@ -226,6 +226,30 @@ data "aws_iam_policy_document" "build_policy" {
   }
 
   statement {
+    sid    = "CodeBuildSSMPolicy"
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameters",
+    ]
+
+    resources = [
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.cluster_name}-${element(var.branches, count.index)}/mango/build/*",
+    ]
+  }
+
+  statement {
+    sid    = "CodeBuildKMSPolicy"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+    ]
+
+    resources = ["${var.kms_master_key_arn}"]
+  }
+
+  statement {
     sid    = "CodeDeployPolicy"
     effect = "Allow"
 
