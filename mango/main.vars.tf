@@ -78,15 +78,6 @@ variable "github_repo" {
   description = "Name of your repository"
 }
 
-variable "github_branches" {
-  default = [
-    "master",
-    "develop",
-  ]
-
-  description = "The branches to be build"
-}
-
 variable "kms_master_key_arn" {
   description = "The KMS master key for encryption"
 }
