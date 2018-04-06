@@ -1,7 +1,12 @@
 # Vodka Terraform Modules
 
-> Vodka is the codename for the delivery architecture of the Tortuga Team
-> :boom: this is only for internal use
+> Vodka is the codename for a delivery architecture. We use the modules in this repository to setup this architecture.
+
+## Getting Started
+
+The modules of this delivery architecture are designed along the [Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow). Which means that everything is distinctively setup and named by a **master** and a **develop** branch. While you do not have to use these branches, or can pass in other branches to setup. We highly recommend to use these and follow the workflow.
+
+We use these modules jointly with [tf-preboot](https://github.com/axelspringer/tf-preboot) to run the architecture multi-staged and multi-regioned. Again, we highly recommend to also use this boilerplate to have the best experience.
 
 ## Playbook
 
