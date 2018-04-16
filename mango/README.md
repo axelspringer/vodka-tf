@@ -2,7 +2,7 @@
 
 A Terraform module which deploys [Mango](https://github.com/axelspringer/mango) to an AWS ECS Cluster created by the `ecs` module.
 
-The module creates the following resource.
+The module creates the following resources
 
 * CodePipeline with Roles, and Policies
 * Integration in EC2 SSM
