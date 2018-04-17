@@ -201,6 +201,7 @@
                   "kinesis:CreateStream",
                   "kinesis:DeleteStream",
                   "kinesis:DescribeStream",
+                  "sns:Subscribe",
                   "sns:CreateTopic",
                   "sns:DeleteTopic",
                   "sns:ListTopics",
