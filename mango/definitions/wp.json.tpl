@@ -5,7 +5,11 @@
     "cpu": ${cpu},
     "memory": ${mem},
     "healthCheck": {
-      "command": [ "CMD-SHELL", "/bin/gibson check --url http://localhost || exit 1" ]
+      "command": [ "CMD-SHELL", "/bin/gibson check --url http://localhost || exit 1" ],
+      "retries": 3,
+      "timeout": 60,
+      "interval": 30,
+      "startPeriod": 60
     },
     "memoryReservation": ${mem_res},
     "logConfiguration": {
