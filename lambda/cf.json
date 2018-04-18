@@ -198,6 +198,8 @@
                   "dynamodb:CreateTable",
                   "dynamodb:DeleteTable",
                   "dynamodb:DescribeTable",
+                  "iam:PutRolePolicy",
+                  "iam:DeleteRolePolicy",
                   "kinesis:CreateStream",
                   "kinesis:DeleteStream",
                   "kinesis:DescribeStream",
