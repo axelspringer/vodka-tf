@@ -61,40 +61,40 @@ resource "aws_ecs_service" "wp_be" {
   }
 }
 
-data "aws_ecs_task_definition" "wp" {
+data "aws_ecs_task_definition" "wp_fe" {
   count           = "${length(var.branches)}"
-  task_definition = "${element(aws_ecs_task_definition.wp.*.family, count.index)}"
-  depends_on      = ["aws_ecs_task_definition.wp"]
+  task_definition = "${element(aws_ecs_task_definition.wp_fe.*.family, count.index)}"
+  depends_on      = ["aws_ecs_task_definition.wp_fe"]
 }
 
-data "template_file" "wp" {
+data "template_file" "wp_fe" {
   count    = "${length(var.branches)}"
-  template = "${file("${path.module}/definitions/wp.json.tpl")}"
+  template = "${file("${path.module}/definitions/wp_fe.json.tpl")}"
 
   vars {
-    name    = "legacy_wp"
+    name    = "legacy_wp_fe"
     cpu     = "${var.cpu}"
     mem     = "${var.memory}"
     mem_res = "${var.memory_reservation}"
     image   = "${var._image}"
     port    = "80"
 
-    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}/legacy/wp"
+    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}/legacy/wp_fe"
 
-    route53_zone = "${join(".", list("wp", "${element(var.branches, count.index)}", var.route53_zone))}"
+    route53_zone = "${join(".", list("wp_fe", "${element(var.branches, count.index)}", var.route53_zone))}"
 
     log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/legacy"
     log_region = "${data.aws_region.current.name}"
-    log_prefix = "wp"
+    log_prefix = "wp_fe"
   }
 }
 
-resource "aws_ecs_task_definition" "wp" {
+resource "aws_ecs_task_definition" "wp_fe" {
   count = "${length(var.branches)}"
 
-  family = "${var.cluster_name}-legacy-wp-${element(var.branches, count.index)}"
+  family = "${var.cluster_name}-legacy-wp-fe-${element(var.branches, count.index)}"
 
-  container_definitions = "${element(data.template_file.wp.*.rendered, count.index)}"
+  container_definitions = "${element(data.template_file.wp_fe.*.rendered, count.index)}"
   network_mode          = "bridge"
 
   task_role_arn = "${element(aws_iam_role.task.*.arn, count.index)}"
@@ -105,12 +105,12 @@ resource "aws_ecs_task_definition" "wp" {
   }
 }
 
-resource "aws_ecs_service" "wp" {
+resource "aws_ecs_service" "wp_fe" {
   count           = "${length(var.cluster_ids)}"
-  name            = "legacy-wp"
+  name            = "legacy-wp-fe"
   cluster         = "${element(var.cluster_ids, count.index)}"
   desired_count   = "${var.size}"
-  task_definition = "${element(aws_ecs_task_definition.wp.*.family, count.index)}:${max("${element(aws_ecs_task_definition.wp.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.wp.*.revision, count.index)}")}"
+  task_definition = "${element(aws_ecs_task_definition.wp_fe.*.family, count.index)}:${max("${element(aws_ecs_task_definition.wp_fe.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.wp_fe.*.revision, count.index)}")}"
 
   # iam_role        = "${aws_iam_role.default.arn}"
 
