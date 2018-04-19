@@ -139,6 +139,7 @@ data "aws_iam_policy_document" "build_role" {
 
     actions = [
       "sts:AssumeRole",
+			"ssm:GetParameters",
     ]
 
     principals = {
