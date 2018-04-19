@@ -17,8 +17,8 @@ resource "aws_codebuild_project" "default" {
     privileged_mode = "${var._build_privileged_mode}"
 
     environment_variable {
-      name  = "REPOSITORY_WP_URI"
-      value = "${element(aws_ecr_repository.wp.*.repository_url, count.index)}"
+      name  = "REPOSITORY_WP_BE_URI"
+      value = "${element(aws_ecr_repository.wp_be.*.repository_url, count.index)}"
     }
 
     environment_variable {
