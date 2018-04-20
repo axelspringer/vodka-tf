@@ -149,19 +149,10 @@ variable "placement_constraint_expression" {
   description = "luster Query Language expression to apply to the constraint. Does not need to be specified for the distinctInstance type."
 }
 
-variable "cpu" {
-  default     = 128
-  description = "The CPU limit for this container definition"
-}
-
-variable "memory" {
-  default     = 128
-  description = "The memory limit for this container definition"
-}
-
-variable "memory_reservation" {
-  default     = 64
-  description = "The soft limit (in MiB) of memory to reserve for the container. When system memory is under contention, Docker attempts to keep the container memory to this soft limit"
+variable "task_resources" {
+  type        = "map"
+  default     = {}
+  description = "The task resources for the GW, WP, and SSR"
 }
 
 variable "environment" {
