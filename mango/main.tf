@@ -1,3 +1,24 @@
+locals {
+  default_task_resources = {
+    // gw
+    gw_cpu                = 128
+    gw_memory             = 128
+    gw_mempry_reservation = 64
+
+    // wp
+    wp_cpu                = 128
+    wp_memory             = 128
+    wp_mempry_reservation = 64
+
+    // ssr
+    ssr_cpu                = 128
+    ssr_memory             = 128
+    ssr_mempry_reservation = 64
+  }
+
+  task_resources = "${merge(local.default_task_resources, var.task_resources)}"
+}
+
 data "aws_ecs_task_definition" "gw" {
   count           = "${length(var.branches)}"
   task_definition = "${element(aws_ecs_task_definition.gw.*.family, count.index)}"
@@ -22,9 +43,9 @@ data "template_file" "gw" {
 
   vars {
     name    = "mango_gw"
-    cpu     = "${var.cpu}"
-    mem_res = "${var.memory_reservation}"
-    mem     = "${var.memory}"
+    cpu     = "${local.task_resources["gw_cpu"]}"
+    mem_res = "${local.task_resources["gw_memory_reservation"]}"
+    mem     = "${local.task_resources["gw_mem"]}"
     image   = "${var._image}"
     port    = "${var._container_port}"
 
@@ -44,9 +65,9 @@ data "template_file" "ssr" {
 
   vars {
     name    = "mango_ssr"
-    cpu     = "${var.cpu}"
-    mem     = "${var.memory}"
-    mem_res = "${var.memory_reservation}"
+    cpu     = "${local.task_resources["ssr_cpu"]}"
+    mem_res = "${local.task_resources["ssr_memory_reservation"]}"
+    mem     = "${local.task_resources["ssr_mem"]}"
     image   = "${var._image}"
     port    = "${var._container_port}"
 
@@ -66,9 +87,9 @@ data "template_file" "wp" {
 
   vars {
     name    = "mango_wp"
-    cpu     = "${var.cpu}"
-    mem     = "${var.memory}"
-    mem_res = "${var.memory_reservation}"
+    cpu     = "${local.task_resources["wp_cpu"]}"
+    mem_res = "${local.task_resources["wp_memory_reservation"]}"
+    mem     = "${local.task_resources["wp_mem"]}"
     image   = "${var._image}"
     port    = "80"
 
