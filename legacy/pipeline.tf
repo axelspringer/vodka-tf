@@ -18,7 +18,7 @@ resource "aws_codebuild_project" "default" {
 
     environment_variable {
       name  = "REPOSITORY_WP_BE_URI"
-      value = "${element(aws_ecr_repository.wp_be.*.repository_url, count.index)}"
+      value = "${element(aws_ecr_repository.wp.*.repository_url, count.index)}"
     }
 
     environment_variable {

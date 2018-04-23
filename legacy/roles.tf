@@ -139,7 +139,6 @@ data "aws_iam_policy_document" "build_role" {
 
     actions = [
       "sts:AssumeRole",
-			"ssm:GetParameters",
     ]
 
     principals = {
@@ -304,7 +303,7 @@ data "aws_iam_policy_document" "build_policy" {
     ]
 
     resources = [
-      "${aws_ecr_repository.wp_be.*.arn}",
+      "${aws_ecr_repository.wp.*.arn}",
     ]
   }
 
