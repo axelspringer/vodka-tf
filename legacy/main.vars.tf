@@ -103,9 +103,8 @@ variable "ecr_max_image_count" {
   default     = "7"
 }
 
-variable "deploy_functions" {
-  type        = "list"
-  description = "deploy"
+variable "deploy_functions_name" {
+  description = "Name to look up lambda functions"
 }
 
 variable "build_compute_type" {
@@ -347,6 +346,14 @@ variable "rds_backup_retention_period" {
 
 variable "rds_backup_window" {
   description = "The daily time range (in UTC) during which automated backups are created if they are enabled. Example: '09:46-10:16'. Must not overlap with maintenance_window"
+}
+
+variable "rds_ssm_path" {
+  description = "Path inside SSM Project"
+}
+
+variable "rds_ssm_project" {
+  description = "Project Context inside SSM"
 }
 
 # ! private

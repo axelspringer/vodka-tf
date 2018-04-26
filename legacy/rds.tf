@@ -12,7 +12,7 @@ data "aws_kms_secret" "db" {
 
 # + get module RDS database instances, security etc.
 module "db" {
-  source = "../rds"
+  source = "/Users/dullrich/Work/konsum/vodka-tf/rds"
 
   # passes along the Git branches
   branches = "${var.branches}"
@@ -62,4 +62,8 @@ module "db" {
 
   # DB Subnet Groups
   subnet_ids = ["${var.database_subnet_ids}"]
+
+	# SSM
+	ssm_path = "${var.rds_ssm_path}"
+	ssm_project = "${var.rds_ssm_project}"
 }

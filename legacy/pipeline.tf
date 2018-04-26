@@ -1,3 +1,14 @@
+data "external" "lambda_arn" {
+  count = "${length(var.branches)}"
+  program = ["bash", "${path.root}/files/getLambda.sh"]
+
+  query = {
+    # arbitrary map from strings to strings, passed
+    # to the external program as the data query.
+    eid = "${var.deploy_functions_name}-${element(var.branches, count.index)}"
+  }
+}
+
 resource "aws_codebuild_project" "default" {
   count          = "${length(var.branches)}"
   name           = "${var.cluster_name}-legacy-${element(var.branches, count.index)}"
@@ -17,7 +28,7 @@ resource "aws_codebuild_project" "default" {
     privileged_mode = "${var._build_privileged_mode}"
 
     environment_variable {
-      name  = "REPOSITORY_WP_BE_URI"
+      name  = "REPOSITORY_WP_URI"
       value = "${element(aws_ecr_repository.wp.*.repository_url, count.index)}"
     }
 
@@ -106,7 +117,7 @@ resource "aws_codepipeline" "pipeline" {
       # }
 
       configuration {
-        FunctionName = "${element(var.deploy_functions, count.index)}"
+        FunctionName = "${element(data.external.lambda_arn.*.result.lambdaname, count.index)}"
       }
     }
   }
