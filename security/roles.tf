@@ -33,3 +33,8 @@ resource "aws_iam_policy_attachment" "tf_consumer" {
   roles      = ["${aws_iam_role.tf_consumer.name}"]
   policy_arn = "${aws_iam_policy.tf_consumer.arn}"
 }
+
+resource "aws_iam_role" "admin" {
+  name               = "tf-${var.project}-${terraform.workspace}-admin"
+  assume_role_policy = "${data.aws_iam_policy_document.role_trust.json}"
+}
