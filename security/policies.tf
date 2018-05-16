@@ -20,6 +20,23 @@ resource "aws_iam_group_policy_attachment" "tf_admins_ec" {
   policy_arn = "${data.aws_iam_policy.ec2_full_access.arn}"
 }
 
+# + get resource IAM Policy allow assuming role
+resource "aws_iam_policy" "assume_role_admin" {
+  name        = "${var.project}-${terraform.workspace}-admin"
+  description = "Allow assuming admin role"
+  policy      = "${data.aws_iam_policy_document.assume_role_admin.json}"
+}
+
+resource "aws_iam_group_policy_attachment" "assume_role_admin" {
+  group      = "${aws_iam_group.admins.name}"
+  policy_arn = "${aws_iam_policy.assume_role_admin.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "admin" {
+  role       = "${aws_iam_role.admin.name}"
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
 # + get resource IAM Policy Ec2 policy
 data "aws_iam_policy" "ec2_full_access" {
   arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
@@ -76,5 +93,30 @@ data "aws_iam_policy_document" "tf_consumer" {
       "${data.aws_s3_bucket.tf_state.arn}/*",
       "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${data.aws_dynamodb_table.tf_lock.name}",
     ]
+  }
+}
+
+# + get data IAM Policy Document for allowing users to change role
+data "aws_iam_policy_document" "role_trust" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "assume_role_admin" {
+  statement {
+    actions   = ["sts:AssumeRole"]
+    resources = ["${aws_iam_role.admin.arn}"]
   }
 }
