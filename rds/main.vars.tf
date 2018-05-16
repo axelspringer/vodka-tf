@@ -71,6 +71,16 @@ variable "db_name" {
   description = "The database name to be used"
 }
 
+# SSM Path
+variable "ssm_path" {
+  description = "SSM Path"
+}
+
+# SSM Project
+variable "ssm_project" {
+  description = "SSM Project"
+}
+
 variable "allocated_storage" {
   description = "The allocated storage in gigabytes"
 }

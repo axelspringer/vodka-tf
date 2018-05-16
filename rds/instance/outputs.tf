@@ -3,6 +3,10 @@ output "db_instance_ids" {
   value       = "${aws_db_instance.default.*.id}"
 }
 
+output "db_instance_endpoint" {
+  value 			= "${aws_db_instance.default.*.endpoint}"
+}
+
 output "db_instance_resource_id" {
   description = "The DB instance ids"
   value       = "${aws_db_instance.default.*.resource_id}"

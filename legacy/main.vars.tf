@@ -3,13 +3,8 @@ variable "cluster_ids" {
   description = "ECS Cluster id"
 }
 
-variable "stagename" {
-	type = "list"
-
-	default = [
-		"fe",
-		"be",
-	]
+variable "stages" {
+	default =	"master:fe,master:be,develop:fe,develop:be"
 }
 
 variable "branches" {

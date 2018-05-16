@@ -19,8 +19,8 @@ resource "aws_iam_role" "ecr" {
 }
 
 resource "aws_iam_role" "task" {
-  count              = "${length(var.branches)}"
-  name               = "${var.cluster_name}-task-${element(var.branches, count.index)}-legacy"
+  count              = "${length(local.branches)}"
+  name               = "${var.cluster_name}-task-${element(local.branches, count.index)}-legacy"
   assume_role_policy = "${data.aws_iam_policy_document.task_role.json}"
 }
 
@@ -40,13 +40,13 @@ resource "aws_iam_role_policy_attachment" "ecr_default" {
 }
 
 resource "aws_iam_role_policy_attachment" "task" {
-  count      = "${length(var.branches)}"
+  count      = "${length(local.branches)}"
   role       = "${element(aws_iam_role.task.*.name, count.index)}"
   policy_arn = "${element(aws_iam_policy.task.*.arn, count.index)}"
 }
 
 resource "aws_iam_role_policy_attachment" "rds" {
-  count      = "${length(var.branches)}"
+  count      = "${length(local.branches)}"
   role       = "${element(aws_iam_role.task.*.name, count.index)}"
   policy_arn = "${element(module.db.db_policy_arns, count.index)}"
 }
@@ -77,8 +77,8 @@ resource "aws_iam_policy" "ecr" {
 }
 
 resource "aws_iam_policy" "task" {
-  count       = "${length(var.branches)}"
-  name        = "${var.cluster_name}-${element(var.branches, count.index)}-task-legacy"
+  count       = "${length(local.branches)}"
+  name        = "${var.cluster_name}-${element(local.branches, count.index)}-task-legacy"
   description = "Allow ECS task to call AWS APIs"
   policy      = "${element(data.aws_iam_policy_document.task_policy.*.json, count.index)}"
 }
@@ -152,7 +152,7 @@ data "aws_iam_policy_document" "build_role" {
 }
 
 data "aws_iam_policy_document" "task_policy" {
-  count = "${length(var.branches)}"
+  count = "${length(local.branches)}"
 
   statement {
     sid    = "ECSTaskPolicyKMS"
@@ -175,7 +175,7 @@ data "aws_iam_policy_document" "task_policy" {
     ]
 
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.cluster_name}-${element(var.branches, count.index)}/*",
+      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${var.cluster_name}-${element(local.branches, count.index)}/*",
     ]
   }
 }

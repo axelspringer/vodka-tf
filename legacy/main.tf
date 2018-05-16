@@ -1,35 +1,52 @@
+resource "null_resource" "let" {
+  count = "${length(split(",",var.stages))}"
+  triggers {
+    raw = "${element(split(",", var.stages),count.index)}"
+  }
+}
+resource "null_resource" "stages" {
+  count = "${length(split(",",var.stages))}"
+  triggers {
+    branch = "${element(split(":",element(null_resource.let.*.triggers.raw, count.index)),0)}"
+    stages = "${element(split(":",element(null_resource.let.*.triggers.raw, count.index)),1)}"
+  }
+}
+
+locals { branches = "${distinct(null_resource.stages.*.triggers.branch)}" }
+
 data "aws_ecs_task_definition" "wp" {
-  count           = "${length(var.stagename)}"
+  count           = "${length(split(",",var.stages))}"
   task_definition = "${element(aws_ecs_task_definition.wp.*.family, count.index)}"
   depends_on      = ["aws_ecs_task_definition.wp"]
 }
 
 data "template_file" "wp" {
-  count    = "${length(var.stagename)}"
-  template = "${file("${path.module}/definitions/wp_${element(var.stagename, count.index)}.json.tpl")}"
+  count    = "${length(split(",",var.stages))}"
+  template = "${file("${path.module}/definitions/wp_${null_resource.stages.*.triggers.stages[count.index]}.json.tpl")}"
 
   vars {
-    name    = "legacy_wp_${element(var.stagename, count.index)}"
+    name    = "legacy_wp_${null_resource.stages.*.triggers.stages[count.index]}"
     cpu     = "${var.cpu}"
     mem     = "${var.memory}"
     mem_res = "${var.memory_reservation}"
     image   = "${var._image}"
     port    = "80"
 
-    templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}/legacy/wp_${element(var.stagename, count.index)}"
+    templeton_path = "/${var.cluster_name}-${null_resource.stages.*.triggers.branch[count.index]}/legacy/wp_${null_resource.stages.*.triggers.stages[count.index]}"
 
-    route53_zone = "${join(".", list("wp_${element(var.stagename, count.index)}", "${element(var.branches, count.index)}", var.route53_zone))}"
+    route53_zone = "${join(".", list("wp_${null_resource.stages.*.triggers.branch[count.index]}", "${null_resource.stages.*.triggers.stages[count.index]}", var.route53_zone))}"
 
-    log_group  = "${var.cluster_name}-${element(var.branches, count.index)}/legacy"
+    log_group  = "${var.cluster_name}-${null_resource.stages.*.triggers.branch[count.index]}/legacy"
     log_region = "${data.aws_region.current.name}"
-    log_prefix = "wp_${element(var.stagename, count.index)}"
+    log_prefix = "wp_${null_resource.stages.*.triggers.stages[count.index]}"
   }
 }
 
 resource "aws_ecs_task_definition" "wp" {
-  count           = "${length(var.stagename) * length(var.branches)}"
+  count           = "${length(split(",",var.stages))}"
 
-  family = "${var.cluster_name}-legacy-wp-${element(var.stagename, count.index / length(var.branches))}-${element(var.branches, count.index)}"
+
+  family = "${var.cluster_name}-legacy-wp-${null_resource.stages.*.triggers.stages[count.index]}-${null_resource.stages.*.triggers.branch[count.index]}"
 
   container_definitions = "${element(data.template_file.wp.*.rendered, count.index)}"
   network_mode          = "bridge"
@@ -43,9 +60,10 @@ resource "aws_ecs_task_definition" "wp" {
 }
 
 resource "aws_ecs_service" "wp" {
-  count           = "${length(var.stagename) * length(var.branches)}"
-  name            = "legacy-wp-${element(var.stagename, count.index / length(var.stagename))}"
-  cluster         = "${element(var.cluster_ids, count.index)}"
+  count           = "${length(split(",",var.stages))}"
+
+  name            = "legacy-wp-${null_resource.stages.*.triggers.stages[count.index]}"
+  cluster         = "arn:aws:ecs:eu-west-1:188769813531:cluster/foodbarn-prod-${null_resource.stages.*.triggers.branch[count.index]}"
   desired_count   = "${var.size}"
   task_definition = "${element(aws_ecs_task_definition.wp.*.family, count.index)}:${max("${element(aws_ecs_task_definition.wp.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.wp.*.revision, count.index)}")}"
 

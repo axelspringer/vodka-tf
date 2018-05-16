@@ -1,7 +1,7 @@
 # + get res S3 Bucket to store pipeline things
 resource "aws_s3_bucket" "default" {
-  count  = "${length(var.branches)}"
-  bucket = "${var.cluster_name}-legacy-pipeline-${element(var.branches, count.index)}"
+  count  = "${length(local.branches)}"
+  bucket = "${var.cluster_name}-legacy-pipeline-${element(local.branches, count.index)}"
   acl    = "private"
 
   versioning {
@@ -13,21 +13,21 @@ resource "aws_s3_bucket" "default" {
 
 # + get res S3 Bucket to store static assets
 resource "aws_s3_bucket" "static" {
-  count  = "${length(var.branches)}"
-  bucket = "${var.cluster_name}-legacy-static-${element(var.branches, count.index)}"
+  count  = "${length(local.branches)}"
+  bucket = "${var.cluster_name}-legacy-static-${element(local.branches, count.index)}"
   acl    = "public-read"
 }
 
 # + get res S3 Bucket Policy
 resource "aws_s3_bucket_policy" "static" {
-  count  = "${length(var.branches)}"
+  count  = "${length(local.branches)}"
   bucket = "${element(aws_s3_bucket.static.*.id, count.index)}"
   policy = "${element(data.aws_iam_policy_document.static.*.json, count.index)}"
 }
 
 # + get res S3
 data "aws_iam_policy_document" "static" {
-  count = "${length(var.branches)}"
+  count = "${length(local.branches)}"
 
   statement {
     sid = "AllowECSTask"
@@ -45,8 +45,8 @@ data "aws_iam_policy_document" "static" {
     }
 
     resources = [
-      "arn:aws:s3:::${var.cluster_name}-legacy-static-${element(var.branches, count.index)}",
-      "arn:aws:s3:::${var.cluster_name}-legacy-static-${element(var.branches, count.index)}/*",
+      "arn:aws:s3:::${var.cluster_name}-legacy-static-${element(local.branches, count.index)}",
+      "arn:aws:s3:::${var.cluster_name}-legacy-static-${element(local.branches, count.index)}/*",
     ]
   }
 }

@@ -15,7 +15,7 @@ module "db" {
   source = "/Users/dullrich/Work/konsum/vodka-tf/rds"
 
   # passes along the Git branches
-  branches = "${var.branches}"
+  branches = "${local.branches}"
 
   name    = "${var.cluster_name}-legacy"
   db_name = "${var.rds_db_name}"
