@@ -13,7 +13,7 @@ locals {
     // ssr
     ssr_cpu                = 128
     ssr_memory             = 128
-    ssr_mempry_reservation = 64
+    ssr_memory_reservation = 64
   }
 
   task_resources = "${merge(local.default_task_resources, var.task_resources)}"
