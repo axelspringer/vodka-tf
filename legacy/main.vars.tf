@@ -4,7 +4,7 @@ variable "cluster_ids" {
 }
 
 variable "stages" {
-	default =	"master:fe,master:be,develop:fe,develop:be"
+  default = "master:fe,master:be,develop:fe,develop:be"
 }
 
 variable "branches" {

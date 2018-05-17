@@ -74,11 +74,13 @@ variable "db_name" {
 # SSM Path
 variable "ssm_path" {
   description = "SSM Path"
+  default     = ""
 }
 
 # SSM Project
 variable "ssm_project" {
   description = "SSM Project"
+  default     = ""
 }
 
 variable "allocated_storage" {
