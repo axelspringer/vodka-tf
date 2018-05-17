@@ -3,12 +3,12 @@ locals {
     // gw
     gw_cpu                = 128
     gw_memory             = 128
-    gw_mempry_reservation = 64
+    gw_memory_reservation = 64
 
     // wp
     wp_cpu                = 128
     wp_memory             = 128
-    wp_mempry_reservation = 64
+    wp_memory_reservation = 64
 
     // ssr
     ssr_cpu                = 128
@@ -45,7 +45,7 @@ data "template_file" "gw" {
     name    = "mango_gw"
     cpu     = "${local.task_resources["gw_cpu"]}"
     mem_res = "${local.task_resources["gw_memory_reservation"]}"
-    mem     = "${local.task_resources["gw_mem"]}"
+    mem     = "${local.task_resources["gw_memory"]}"
     image   = "${var._image}"
     port    = "${var._container_port}"
 
@@ -67,7 +67,7 @@ data "template_file" "ssr" {
     name    = "mango_ssr"
     cpu     = "${local.task_resources["ssr_cpu"]}"
     mem_res = "${local.task_resources["ssr_memory_reservation"]}"
-    mem     = "${local.task_resources["ssr_mem"]}"
+    mem     = "${local.task_resources["ssr_memory"]}"
     image   = "${var._image}"
     port    = "${var._container_port}"
 
@@ -89,7 +89,7 @@ data "template_file" "wp" {
     name    = "mango_wp"
     cpu     = "${local.task_resources["wp_cpu"]}"
     mem_res = "${local.task_resources["wp_memory_reservation"]}"
-    mem     = "${local.task_resources["wp_mem"]}"
+    mem     = "${local.task_resources["wp_memory"]}"
     image   = "${var._image}"
     port    = "80"
 
