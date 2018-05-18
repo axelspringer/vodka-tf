@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "read_trust_policy" {
 
     condition {
       test     = "Bool"
-      variable = "s3:aws:MultiFactorAuthPresent"
+      variable = "aws:MultiFactorAuthPresent"
 
       values = [
         "true",
