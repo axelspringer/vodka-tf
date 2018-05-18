@@ -45,4 +45,5 @@ resource "aws_iam_role" "read" {
 resource "aws_iam_policy" "read_assume_policy" {
   name        = "${var.cluster_name}-mango-read"
   description = "This policy allows to assume the ${var.cluster_name}-mango-read role"
+  policy      = "${data.aws_iam_policy_document.read_assume_policy.json}"
 }
