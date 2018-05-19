@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "read_cloudwatch_log_group" {
       "logs:FilterLogEvents",
     ]
 
-    resources = ["${aws_cloudwatch_log_group.arn}"]
+    resources = ["${aws_cloudwatch_log_group.default.arn}"]
   }
 }
 
