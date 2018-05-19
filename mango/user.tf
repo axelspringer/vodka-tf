@@ -51,5 +51,5 @@ resource "aws_iam_role_policy_attachment" "read_cloudwatch_log_group" {
 
 resource "aws_iam_role_policy_attachment" "read_codebuild" {
   role       = "${aws_iam_role.read.name}"
-  policy_arn = "${aws_iam_policy.read_codebuild.arn}"
+  policy_arn = "${aws_iam_policy.read_codebuild.*.arn}"
 }
