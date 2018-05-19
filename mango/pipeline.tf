@@ -18,9 +18,10 @@ data "aws_iam_policy_document" "read_codebuild" {
 }
 
 resource "aws_iam_policy" "read_codebuild" {
-  name        = "${var.cluster_name}-mango-read-codebuild"
+  count       = "${length(var.branches)}"
+  name        = "${var.cluster_name}-mango-${element(var.branches, count.index)}-read-codebuild"
   description = "This policy allows to read mango Cloudwatch Logs"
-  policy      = "${data.aws_iam_policy_document.read_codebuild.*.json}"
+  policy      = "${element(data.aws_iam_policy_document.read_codebuild.*.json, count.index)}"
 }
 
 resource "aws_codebuild_project" "default" {
