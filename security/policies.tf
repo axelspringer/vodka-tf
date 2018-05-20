@@ -258,23 +258,6 @@ data "aws_iam_policy_document" "manage_mfa" {
   }
 }
 
-data "aws_iam_policy_document" "role_trust" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
-    }
-
-    condition {
-      test     = "Bool"
-      variable = "aws:MultiFactorAuthPresent"
-      values   = ["true"]
-    }
-  }
-}
-
 data "aws_iam_policy_document" "allow_change_password" {
   statement {
     actions   = ["iam:ChangePassword"]
