@@ -52,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "admin" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
-resource "aws_iam_policy" "allow_mfa" {
+resource "aws_iam_policy" "manage_mfa" {
   name        = "${var.project}-${terraform.workspace}-mfa"
   description = "Allow users to manage there only mfa"
   policy      = "${data.aws_iam_policy_document.manage_mfa.json}"
