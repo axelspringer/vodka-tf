@@ -32,9 +32,74 @@ resource "aws_iam_group_policy_attachment" "assume_role_admin" {
   policy_arn = "${aws_iam_policy.assume_role_admin.arn}"
 }
 
+resource "aws_iam_group_policy_attachment" "assume_role_dev" {
+  group      = "${aws_iam_group.devs.name}"
+  policy_arn = "${aws_iam_policy.assume_role_dev.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "assume_role_op" {
+  group      = "${aws_iam_group.ops.name}"
+  policy_arn = "${aws_iam_policy.assume_role_op.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "assume_role_consumer" {
+  group      = "${aws_iam_group.consumers.name}"
+  policy_arn = "${aws_iam_policy.assume_role_consumer.arn}"
+}
+
 resource "aws_iam_role_policy_attachment" "admin" {
   role       = "${aws_iam_role.admin.name}"
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+resource "aws_iam_policy" "allow_mfa" {
+  name        = "${var.project}-${terraform.workspace}-mfa"
+  description = "Allow users to manage there only mfa"
+  policy      = "${data.aws_iam_policy_document.manage_mfa.json}"
+}
+
+resource "aws_iam_policy" "allow_change_password" {
+  name        = "${var.project}-${terraform.workspace}-password"
+  description = "Allow users to change password"
+  policy      = "${data.aws_iam_policy_document.allow_change_password.json}"
+}
+
+resource "aws_iam_policy" "assume_role_dev" {
+  name        = "${var.project}-${terraform.workspace}-assume-dev"
+  description = "Allow assuming dev role"
+  policy      = "${data.aws_iam_policy_document.assume_role_dev.json}"
+}
+
+resource "aws_iam_policy" "assume_role_op" {
+  name        = "${var.project}-${terraform.workspace}-assume-op"
+  description = "Allow assuming dev role"
+  policy      = "${data.aws_iam_policy_document.assume_role_op.json}"
+}
+
+resource "aws_iam_policy" "assume_role_consumer" {
+  name        = "${var.project}-${terraform.workspace}-assume-consumer"
+  description = "Allow assuming dev role"
+  policy      = "${data.aws_iam_policy_document.assume_role_consumer.json}"
+}
+
+resource "aws_iam_group_policy_attachment" "devs_manage_mfa" {
+  group      = "${aws_iam_group.devs.name}"
+  policy_arn = "${aws_iam_policy.manage_mfa.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "ops_manage_mfa" {
+  group      = "${aws_iam_group.ops.name}"
+  policy_arn = "${aws_iam_policy.manage_mfa.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "devs_password" {
+  group      = "${aws_iam_group.devs.name}"
+  policy_arn = "${aws_iam_policy.allow_change_password.arn}"
+}
+
+resource "aws_iam_group_policy_attachment" "ops_password" {
+  group      = "${aws_iam_group.ops.name}"
+  policy_arn = "${aws_iam_policy.allow_change_password.arn}"
 }
 
 # + get resource IAM Policy Ec2 policy
@@ -118,5 +183,106 @@ data "aws_iam_policy_document" "assume_role_admin" {
   statement {
     actions   = ["sts:AssumeRole"]
     resources = ["${aws_iam_role.admin.arn}"]
+  }
+}
+
+data "aws_iam_policy_document" "assume_role_dev" {
+  statement {
+    actions   = ["sts:AssumeRole"]
+    resources = ["${aws_iam_role.dev.arn}"]
+  }
+}
+
+data "aws_iam_policy_document" "assume_role_op" {
+  statement {
+    actions   = ["sts:AssumeRole"]
+    resources = ["${aws_iam_role.op.arn}"]
+  }
+}
+
+data "aws_iam_policy_document" "assume_role_consumer" {
+  statement {
+    actions   = ["sts:AssumeRole"]
+    resources = ["${aws_iam_role.consumer.arn}"]
+  }
+}
+
+data "aws_iam_policy_document" "manage_mfa" {
+  statement {
+    sid = "AllowUsersToCreateEnableResyncDeleteTheirOwnVirtualMFADevice"
+
+    actions = [
+      "iam:CreateVirtualMFADevice",
+      "iam:EnableMFADevice",
+      "iam:ResyncMFADevice",
+      "iam:DeleteVirtualMFADevice",
+    ]
+
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:mfa/&{aws:username}",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}",
+    ]
+  }
+
+  statement {
+    sid = "AllowUsersToDeactivateTheirOwnVirtualMFADevice"
+
+    actions = [
+      "iam:DeactivateMFADevice",
+    ]
+
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:mfa/&{aws:username}",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}",
+    ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
+  }
+
+  statement {
+    sid = "AllowUsersToListMFADevicesandUsersForConsole"
+
+    actions = [
+      "iam:ListMFADevices",
+      "iam:ListVirtualMFADevices",
+      "iam:ListUsers",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "role_trust" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "allow_change_password" {
+  statement {
+    actions   = ["iam:ChangePassword"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/&{aws:username}"]
+  }
+
+  statement {
+    actions   = ["iam:GetAccountPasswordPolicy"]
+    resources = ["*"]
   }
 }
