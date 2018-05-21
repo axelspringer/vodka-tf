@@ -55,11 +55,6 @@ resource "aws_iam_role_policy_attachment" "read_codebuild" {
   role       = "${aws_iam_role.read.name}"
 }
 
-resource "aws_iam_role_policy_attachment" "read_cloudwatch_log_group" {
-  role       = "${aws_iam_role.read.name}"
-  policy_arn = "${aws_iam_policy.read_cloudwatch_log_group.arn}"
-}
-
 resource "aws_iam_role_policy_attachment" "dev_cloudwatch_log_group" {
   count      = "${var.dev_role_name != "" ? 1 : 0}"
   role       = "${var.dev_role_name}"
