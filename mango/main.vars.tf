@@ -331,6 +331,18 @@ variable "rds_backup_window" {
   description = "The daily time range (in UTC) during which automated backups are created if they are enabled. Example: '09:46-10:16'. Must not overlap with maintenance_window"
 }
 
+variable "dev_role_name" {
+  default = ""
+}
+
+variable "admin_role_name" {
+  default = ""
+}
+
+variable "op_role_name" {
+  default = ""
+}
+
 # ! private
 variable "_task_log_retention_in_days" {
   default = 7
