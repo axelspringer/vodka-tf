@@ -12,7 +12,7 @@ data "aws_kms_secret" "db" {
 
 # + get module RDS database instances, security etc.
 module "db" {
-  source = "/Users/dullrich/Work/konsum/vodka-tf/rds"
+	source = "github.com/axelspringer/vodka-tf//rds"
 
   # passes along the Git branches
   branches = "${local.branches}"
