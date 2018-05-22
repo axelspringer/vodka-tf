@@ -7,15 +7,6 @@ variable "stages" {
 	default =	"master:fe,master:be,develop:fe,develop:be"
 }
 
-variable "branches" {
-  type = "list"
-
-  default = [
-    "master",
-    "develop",
-  ]
-}
-
 variable "route53_zone" {
   description = "Route 53 Zone to use for external use"
 }
