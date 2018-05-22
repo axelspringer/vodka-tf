@@ -1,3 +1,29 @@
+data "aws_iam_policy_document" "read_codebuild" {
+  count = "${length(var.branches)}"
+
+  statement {
+    sid    = "ReadCloudWatchLogGroup"
+    effect = "Allow"
+
+    actions = [
+      "logs:DescribeLogStreams",
+      "logs:GetLogEvents",
+      "logs:FilterLogEvents",
+    ]
+
+    resources = [
+      "arn:aws:logs:eu-west-1:188769813531:log-group:/aws/codebuild/${var.cluster_name}-mango-${element(var.branches, count.index)}:*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "read_codebuild" {
+  count       = "${length(var.branches)}"
+  name        = "${var.cluster_name}-mango-${element(var.branches, count.index)}-read-codebuild"
+  description = "This policy allows to read mango Cloudwatch Logs"
+  policy      = "${element(data.aws_iam_policy_document.read_codebuild.*.json, count.index)}"
+}
+
 resource "aws_codebuild_project" "default" {
   count          = "${length(var.branches)}"
   name           = "${var.cluster_name}-mango-${element(var.branches, count.index)}"

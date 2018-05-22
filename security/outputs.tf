@@ -77,3 +77,27 @@ output "devs_group_arn" {
 output "devs_group_id" {
   value = "${aws_iam_group.devs.id}"
 }
+
+output "dev_role_arn" {
+  value = "${aws_iam_role.dev.arn}"
+}
+
+output "dev_role_name" {
+  value = "${aws_iam_role.dev.name}"
+}
+
+output "admin_role_arn" {
+  value = "${aws_iam_role.admin.arn}"
+}
+
+output "admin_role_name" {
+  value = "${aws_iam_role.admin.name}"
+}
+
+output "op_role_arn" {
+  value = "${aws_iam_role.op.arn}"
+}
+
+output "op_role_name" {
+  value = "${aws_iam_role.op.name}"
+}
