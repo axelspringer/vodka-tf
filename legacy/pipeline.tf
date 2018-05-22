@@ -6,6 +6,7 @@ data "external" "lambda_arn" {
     # arbitrary map from strings to strings, passed
     # to the external program as the data query.
     eid = "${var.deploy_functions_name}-${element(local.branches, count.index)}"
+		bra = "${element(local.branches, count.index)}"
   }
 }
 
@@ -117,7 +118,8 @@ resource "aws_codepipeline" "pipeline" {
       # }
 
       configuration {
-        FunctionName = "${element(data.external.lambda_arn.*.result.lambdaname, count.index)}"
+        FunctionName = "${element(data.external.lambda_arn.*.result.lambdaname, index(data.external.lambda_arn.*.result.branches, element(local.branches, count.index)))}"
+        #FunctionName = "${element(data.external.lambda_arn.*.result.lambdaname, count.index)}"
       }
     }
   }
