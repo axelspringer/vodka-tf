@@ -209,6 +209,7 @@
                   "sns:ListTopics",
                   "sns:GetTopicAttributes",
                   "sns:SetTopicAttributes",
+                  "sqs:*",
                   "s3:CreateBucket",
                   "s3:DeleteBucket",
                   "config:DescribeConfigRules",
