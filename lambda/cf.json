@@ -591,7 +591,7 @@
                   "iam:PassRole"
                 ],
                 "Effect": "Allow",
-                "Resource": "arn:aws:iam::188769813531:role/axelspringer-prod-task-*"
+                "Resource": "arn:aws:iam::188769813531:role/foodbarn-prod-task-*"
               },
               {
                 "Action": [

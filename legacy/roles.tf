@@ -45,6 +45,12 @@ resource "aws_iam_role_policy_attachment" "task" {
   policy_arn = "${element(aws_iam_policy.task.*.arn, count.index)}"
 }
 
+resource "aws_iam_role_policy_attachment" "s3" {
+  count      = "${length(local.branches)}"
+  role       = "${element(aws_iam_role.task.*.name, count.index)}"
+  policy_arn = "${element(aws_iam_policy.s3.*.arn, count.index)}"
+}
+
 resource "aws_iam_role_policy_attachment" "rds" {
   count      = "${length(local.branches)}"
   role       = "${element(aws_iam_role.task.*.name, count.index)}"
@@ -83,9 +89,29 @@ resource "aws_iam_policy" "task" {
   policy      = "${element(data.aws_iam_policy_document.task_policy.*.json, count.index)}"
 }
 
+resource "aws_iam_policy" "s3" {
+  count       = "${length(local.branches)}"
+  name        = "${var.cluster_name}-${element(local.branches, count.index)}-s3-legacy"
+  description = "Allow ECS task to call S3"
+  policy      = "${element(data.aws_iam_policy_document.s3_policy.*.json, count.index)}"
+}
+
 data "aws_iam_policy_document" "task_role" {
   statement {
     sid     = "ECSTaskRole"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals = {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "s3_role" {
+  statement {
+    sid     = "ECSS3TaskRole"
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
 
@@ -382,5 +408,22 @@ data "aws_iam_policy_document" "pipeline_policy" {
     ]
 
     resources = ["${var.kms_master_key_arn}"]
+  }
+}
+
+data "aws_iam_policy_document" "s3_policy" {
+  statement {
+    sid    = "EcsTaskPolicyS3"
+    effect = "Allow"
+
+    actions = [
+      "s3:Get*",
+      "s3:PutObject",
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      "${concat(aws_s3_bucket.static.*.arn, formatlist("%v/*", aws_s3_bucket.static.*.arn))}",
+    ]
   }
 }

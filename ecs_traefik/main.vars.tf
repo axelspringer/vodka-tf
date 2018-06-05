@@ -39,6 +39,11 @@ variable "route53_wildcard_zone" {
   description = "The Route 53 wildcard domain to be used"
 }
 
+variable "domain_list" {
+  description = "List of domains to get certificates for"
+	type = "list"
+}
+
 variable "enable_stickiness" {
   default     = true
   description = "Enable sticky sessions on the ALB"
@@ -117,7 +122,7 @@ variable "_task_log_retention_in_days" {
 }
 
 variable "_image" {
-  default = "traefik:1.5"
+  default = "traefik:1.6"
 }
 
 variable "_evaluate_target_health" {

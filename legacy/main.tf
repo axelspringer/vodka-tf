@@ -32,9 +32,14 @@ data "template_file" "wp" {
     image   = "${var._image}"
     port    = "80"
 
+		wp_layer = "${null_resource.stages.*.triggers.stages[count.index]}"
+		wp_origin = "http://wp_fe.master.foodbarn.konsum.zone/"
+		environment = "${null_resource.stages.*.triggers.branch[count.index]}"
+		whitlist = ""
+
     templeton_path = "/${var.cluster_name}-${null_resource.stages.*.triggers.branch[count.index]}/legacy/wp_${null_resource.stages.*.triggers.stages[count.index]}"
 
-    route53_zone = "${join(".", list("wp_${null_resource.stages.*.triggers.branch[count.index]}", "${null_resource.stages.*.triggers.stages[count.index]}", var.route53_zone))}"
+    route53_zone = "${join(".", list("wp_${null_resource.stages.*.triggers.stages[count.index]}", "${null_resource.stages.*.triggers.branch[count.index]}", var.route53_zone))}"
 
     log_group  = "${var.cluster_name}-${null_resource.stages.*.triggers.branch[count.index]}/legacy"
     log_region = "${data.aws_region.current.name}"
@@ -68,6 +73,12 @@ resource "aws_ecs_service" "wp" {
   task_definition = "${element(aws_ecs_task_definition.wp.*.family, count.index)}:${max("${element(aws_ecs_task_definition.wp.*.revision, count.index)}", "${element(data.aws_ecs_task_definition.wp.*.revision, count.index)}")}"
 
   # iam_role        = "${aws_iam_role.default.arn}"
+
+  # workaround to ignore changes made through pipeline deployments
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = ["task_definition"]
+  }
 
   placement_strategy {
     type  = "${var.placement_strategy_type}"
