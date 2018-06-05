@@ -1,5 +1,7 @@
 variable "peer_vpc_ids" {
   description = "The Id of the peering VPC"
+
+	type = "list"
 }
 
 variable "peer_owner_id" {
@@ -22,4 +24,24 @@ variable "_allow_remote_vpc_dns_resolution" {
 
 variable "_auto_accept" {
   default = true
+}
+
+variable "peer_from_route_tables" {
+  type = "list"
+
+  description = "List of route tables from the peer_from VPC"
+}
+
+variable "peer_to_route_tables" {
+  type = "list"
+
+  description = "List of route tables from the peer to VPC."
+}
+
+variable "destination_from_cidr" {
+	description = ""
+}
+
+variable "destination_to_cidr" {
+	description = ""
 }

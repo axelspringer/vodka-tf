@@ -17,3 +17,19 @@ resource "aws_vpc_peering_connection" "default" {
 
   tags = "${ merge( var.tags, map( "Terraform", "true" ) ) }"
 }
+
+resource "aws_route" "peer_from_to_peer_to" {
+  count = "${length(var.peer_from_route_tables)}"
+
+  route_table_id            = "${element(var.peer_from_route_tables, count.index)}"
+  destination_cidr_block    = "${var.destination_from_cidr}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
+}
+
+resource "aws_route" "peer_to_to_peer_from" {
+  count = "${length(var.peer_to_route_tables)}"
+
+  route_table_id            = "${element(var.peer_to_route_tables, count.index)}"
+  destination_cidr_block    = "${var.destination_to_cidr}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.default.id}"
+}
