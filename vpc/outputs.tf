@@ -31,7 +31,8 @@ output "vpc_id" {
 }
 
 output "vpc_cidr" {
-	value = ["${aws_vpc.mod.cidr_block}"]
+	#value = ["${aws_vpc.mod.cidr_block}"]
+	value = ["${var.cidr}"]
 }
 
 output "public_route_table_ids" {
