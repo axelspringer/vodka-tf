@@ -3,14 +3,14 @@ output "certificate_arn" {
 }
 
 output "dns_record" {
-  value = "${aws_acm_certificate.cert.*.resource_record_name}"
+  value = "${aws_acm_certificate.cert.domain_validation_options.*.resource_record_name}"
 }
 
 output "dns_type" {
-  value = "${aws_acm_certificate.cert.*.resource_record_type}"
+  value = "${aws_acm_certificate.cert.domain_validation_options.*.resource_record_type}"
 }
 
 output "dns_value" {
-  value = "${aws_acm_certificate.cert.*.resource_record_value}"
+  value = "${aws_acm_certificate.cert.domain_validation_options.*.resource_record_value}"
 }
 
