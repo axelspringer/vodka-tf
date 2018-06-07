@@ -34,9 +34,8 @@ data "aws_iam_policy_document" "read_assume_policy" {
 
 # + res create aws bucket access user
 resource "aws_iam_user" "static" {
-  count  = "${length(var.branches)}"
-  name   = "${var.cluster_name}-mango-static-${element(var.branches, count.index)}"
-  policy = "${element(data.aws_iam_policy_document.static.*.json, count.index)}"
+  count = "${length(var.branches)}"
+  name  = "${var.cluster_name}-mango-static-${element(var.branches, count.index)}"
 }
 
 # generate keys for service account user
