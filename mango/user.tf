@@ -32,6 +32,19 @@ data "aws_iam_policy_document" "read_assume_policy" {
   }
 }
 
+# + res create aws bucket access user
+resource "aws_iam_user" "static" {
+  count  = "${length(var.branches)}"
+  name   = "${var.cluster_name}-mango-static-${element(var.branches, count.index)}"
+  policy = "${element(data.aws_iam_policy_document.static.*.json, count.index)}"
+}
+
+# generate keys for service account user
+resource "aws_iam_access_key" "static" {
+  count = "${length(var.branches)}"
+  user  = "${element(aws_iam_user.static.*.name, count.index)}"
+}
+
 resource "aws_iam_role" "read" {
   name               = "${var.cluster_name}-mango-read"
   description        = "This role allows read access to all relevant resources"
