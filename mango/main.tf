@@ -149,6 +149,11 @@ resource "aws_ecs_task_definition" "wp" {
     type       = "${var.placement_constraint_type}"
     expression = "${var.placement_constraint_expression}"
   }
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = ["task_definition"]
+  }
 }
 
 resource "aws_ecs_service" "ssr" {
@@ -168,6 +173,10 @@ resource "aws_ecs_service" "ssr" {
     type       = "${var.placement_constraint_type}"
     expression = "${var.placement_constraint_expression}"
   }
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = ["task_definition"]
+  }
 }
 
 resource "aws_ecs_service" "wp" {
@@ -186,6 +195,10 @@ resource "aws_ecs_service" "wp" {
   placement_constraints {
     type       = "${var.placement_constraint_type}"
     expression = "${var.placement_constraint_expression}"
+  }
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = ["task_definition"]
   }
 }
 
