@@ -1,5 +1,5 @@
 resource "aws_ssm_parameter" "ssm_host" {
-	count = "${length(var.branches)}"
+  count = "${var._create_ssm ? length(var.branches) : 0}"
   name  = "/${var.ssm_project}-${element(var.branches, count.index)}/${var.ssm_path}/db_host"
 
   type  = "String"
@@ -7,7 +7,7 @@ resource "aws_ssm_parameter" "ssm_host" {
 }
 
 resource "aws_ssm_parameter" "ssm_user" {
-	count = "${length(var.branches)}"
+  count = "${var._create_ssm ? length(var.branches) : 0}"
   name  = "/${var.ssm_project}-${element(var.branches, count.index)}/${var.ssm_path}/db_user"
 
   type  = "String"
@@ -15,7 +15,7 @@ resource "aws_ssm_parameter" "ssm_user" {
 }
 
 resource "aws_ssm_parameter" "ssm_db_name" {
-	count = "${length(var.branches)}"
+  count = "${var._create_ssm ? length(var.branches) : 0}"
   name  = "/${var.ssm_project}-${element(var.branches, count.index)}/${var.ssm_path}/db_name"
 
   type  = "String"

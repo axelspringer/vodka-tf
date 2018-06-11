@@ -219,3 +219,8 @@ variable "backup_retention_period" {
 variable "backup_window" {
   description = "The daily time range (in UTC) during which automated backups are created if they are enabled. Example: '09:46-10:16'. Must not overlap with maintenance_window"
 }
+
+# ! private
+variable "_create_ssm" {
+  default = true
+}

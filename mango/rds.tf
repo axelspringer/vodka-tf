@@ -62,4 +62,7 @@ module "db" {
 
   # DB Subnet Groups
   subnet_ids = ["${var.database_subnet_ids}"]
+
+  # use private
+  _create_ssm = false
 }
