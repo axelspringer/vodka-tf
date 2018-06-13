@@ -92,6 +92,7 @@ data "template_file" "wp" {
     mem     = "${local.task_resources["wp_memory"]}"
     image   = "${var._image}"
     port    = "80"
+		whitelist = "${var.whitelist}"
 
     templeton_path = "/${var.cluster_name}-${element(var.branches, count.index)}/mango/wp"
 

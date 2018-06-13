@@ -12,6 +12,14 @@ variable "branches" {
   ]
 }
 
+variable "whitelist" {
+  type = "list"
+
+  default = [
+    "145.243.0.0/16",
+  ]
+}
+
 variable "route53_zone" {
   description = "Route 53 Zone to use for external use"
 }
