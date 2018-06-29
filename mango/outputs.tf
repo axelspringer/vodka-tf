@@ -9,3 +9,15 @@ output "aws_iam_access_key_ids" {
 output "aws_iam_access_key_secrets" {
   value = "${aws_iam_access_key.static.*.secret}"
 }
+
+output "aws_ses_user_names" {
+  value = "${aws_iam_user.email.*.name}"
+}
+
+output "aws_ses_access_key_ids" {
+  value = "${aws_iam_access_key.email.*.id}"
+}
+
+output "aws_ses_access_key_secrets" {
+  value = "${aws_iam_access_key.email.*.secret}"
+}
