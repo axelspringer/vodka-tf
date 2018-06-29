@@ -34,5 +34,5 @@ resource "aws_iam_user" "email" {
 
 resource "aws_iam_access_key" "email" {
   count = "${length(var.branches)}"
-  user  = "${element(aws_iam_user.mail.*.name, count.index)}"
+  user  = "${element(aws_iam_user.email.*.name, count.index)}"
 }
