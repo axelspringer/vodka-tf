@@ -3,6 +3,8 @@ variable "cluster_ids" {
   description = "ECS Cluster id"
 }
 
+variable "whitelist" {}
+
 variable "stages" {
   default = "master:fe,master:be,develop:fe,develop:be"
 }

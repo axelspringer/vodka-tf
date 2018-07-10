@@ -33,7 +33,7 @@
       "traefik.frontend.passHostHeader": "true",
       "traefik.frontend.entryPoints": "http"
       "traefik.frontend.whiteList.useXForwardedFor": "true",
-      "traefik.frontend.whiteList.sourceRange": "${whitelist}"
+      "traefik.frontend.whiteList.sourceRange": "145.243.0.0/16"
     }
   }
 ]

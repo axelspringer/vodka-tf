@@ -35,7 +35,7 @@ data "template_file" "wp" {
 		wp_layer = "${null_resource.stages.*.triggers.stages[count.index]}"
 		wp_origin = "http://wp_fe.master.foodbarn.konsum.zone/"
 		environment = "${null_resource.stages.*.triggers.branch[count.index]}"
-		whitlist = ""
+		#whitlist = ""
 
     templeton_path = "/${var.cluster_name}-${null_resource.stages.*.triggers.branch[count.index]}/legacy/wp_${null_resource.stages.*.triggers.stages[count.index]}"
 
